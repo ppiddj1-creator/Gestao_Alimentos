@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Pessoas | Gestão Alimentar Escolar</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a class="navbar-marca" href="dashboard.html">🍽️ GESTÃO ALIMENTAR</a>
+      <div class="navbar-menu">
+        <a href="dashboard.html">Painel</a>
+        <a href="cadastro.html" class="ativo">Cadastro</a>
+        <a href="registro.html">Registro</a>
+        <a href="cardapio.html">Cardápio</a>
+        <a href="relatorio.html">Relatórios</a>
+        <a href="usuario.html">Usuários</a>
+      </div>
+      <div class="navbar-usuario">
+        <span id="usuario-nome">Admin</span>
+        <button class="sair" onclick="Auth.sair(); window.location.href='index.html';">Sair</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h2 style="margin: 20px 0 10px;">Cadastro de Pessoas</h2>
+
+    <div class="card">
+      <div class="card-titulo">Nova Pessoa</div>
+      <div id="alerta-cadastro" class="alerta oculto"></div>
+      <form id="form-cadastro">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div class="form-grupo">
+            <label for="nome">Nome Completo</label>
+            <input type="text" id="nome" required placeholder="Nome da pessoa">
+          </div>
+          <div class="form-grupo">
+            <label for="categoria">Categoria</label>
+            <select id="categoria" required>
+              <option value="">Selecione...</option>
+              <option value="aluno">Aluno</option>
+              <option value="professor">Professor</option>
+              <option value="funcionario">Funcionário</option>
+            </select>
+          </div>
+          <div class="form-grupo">
+            <label for="turmaSetor">Turma / Setor</label>
+            <input type="text" id="turmaSetor" required placeholder="Ex: 3º Ano A, Limpeza">
+          </div>
+          <div class="form-grupo">
+            <label for="matricula">Matrícula</label>
+            <input type="text" id="matricula" required placeholder="Ex: 2026001">
+          </div>
+          <div class="form-grupo">
+            <label for="telefone">Telefone (opcional)</label>
+            <input type="text" id="telefone" placeholder="(11) 99999-0000">
+          </div>
+          <div class="form-grupo">
+            <label for="senha-cadastro">Senha</label>
+            <input type="text" id="senha-cadastro" value="123456" required>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primario" style="margin-top: 10px;">Salvar</button>
+        <button type="button" class="btn" style="margin-top: 10px; background:#ccc;" onclick="Cadastro.limparForm()">Limpar</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo">Pessoas Cadastradas</div>
+      <div style="margin-bottom: 10px;">
+        <input type="text" id="busca-pessoas" placeholder="Buscar por nome, matrícula ou categoria..." style="width: 100%; padding: 10px; border:1px solid #ccc; border-radius: 8px;">
+      </div>
+      <div id="tabela-pessoas">
+        <p>Carregando...</p>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/dados-iniciais.js"></script>
+  <script src="js/database.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cadastro.js"></script>
+</body>
+</html>

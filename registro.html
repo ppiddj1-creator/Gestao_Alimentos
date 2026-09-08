@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro Diário | Gestão Alimentar Escolar</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a class="navbar-marca" href="dashboard.html">🍽️ GESTÃO ALIMENTAR</a>
+      <div class="navbar-menu">
+        <a href="dashboard.html">Painel</a>
+        <a href="cadastro.html">Cadastro</a>
+        <a href="registro.html" class="ativo">Registro</a>
+        <a href="cardapio.html">Cardápio</a>
+        <a href="relatorio.html">Relatórios</a>
+        <a href="usuario.html">Usuários</a>
+      </div>
+      <div class="navbar-usuario">
+        <span id="usuario-nome">Admin</span>
+        <button class="sair" onclick="Auth.sair(); window.location.href='index.html';">Sair</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h2 style="margin: 20px 0 10px;">Registro Diário de Almoço</h2>
+
+    <div class="card">
+      <div class="card-titulo">Selecionar Data</div>
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+        <div class="form-grupo" style="margin-bottom:0;">
+          <label for="data-registro">Data do registro</label>
+          <input type="date" id="data-registro" required>
+        </div>
+        <div style="margin-top:20px;">
+          <button class="btn btn-primario" onclick="Registro.carregarPessoas()">Carregar Pessoas</button>
+          <button class="btn btn-azul" onclick="Registro.salvar()" style="margin-left:8px;">Salvar Registro</button>
+        </div>
+      </div>
+      <p style="margin-top:10px; color:#666; font-size:13px;">* Registros são feitos para o dia seguinte. Na tela de cada aluno:</p>
+      <p style="color:#666; font-size:13px;">  - <strong>SIM</strong> = vai almoçar | <strong>NÃO</strong> = não vai almoçar</p>
+    </div>
+
+    <div id="alerta-registro" class="alerta oculto"></div>
+
+    <div class="card" id="card-lista" style="display:none;">
+      <div class="card-titulo">
+        Lista de Pessoas
+        <span style="float:right; font-size:13px; font-weight:normal;">
+          <label><input type="checkbox" id="marcar-todos"> Marcar todos "SIM"</label>
+        </span>
+      </div>
+      <div id="lista-pessoas-registro">
+        <p>Selecione uma data e clique em "Carregar Pessoas".</p>
+      </div>
+      <div style="margin-top:15px; padding-top:15px; border-top:1px solid #eee;">
+        <strong>Resumo: </strong>
+        <span id="resumo-registros">-</span>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/dados-iniciais.js"></script>
+  <script src="js/database.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/registro.js"></script>
+</body>
+</html>

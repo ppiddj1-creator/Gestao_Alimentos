@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu Registro | Gestão Alimentar Escolar</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background-color: #fff; }
+
+    .aluno-pagina {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--verde-primario) 0%, var(--verde-escuro) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .aluno-card {
+      background: var(--branco);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      padding: 30px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .aluno-card h2 {
+      color: var(--verde-escuro);
+      margin-bottom: 8px;
+    }
+
+    .aluno-card .subtitulo {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .opcoes {
+      display: flex;
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .opcao-btn {
+      flex: 1;
+      padding: 30px 16px;
+      border: 3px solid #ccc;
+      border-radius: 12px;
+      background: var(--branco);
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .opcao-btn .icone {
+      font-size: 32px;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .opcao-btn.sim {
+      border-color: #4caf50;
+      color: #2e7d32;
+    }
+
+    .opcao-btn.sim.selecionado {
+      background: #e8f5e9;
+      border-color: #2e7d32;
+    }
+
+    .opcao-btn.nao {
+      border-color: #ef5350;
+      color: #c62828;
+    }
+
+    .opcao-btn.nao.selecionado {
+      background: #ffebee;
+      border-color: #c62828;
+    }
+
+    .status-msg {
+      margin-top: 16px;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .status-msg.confirmado {
+      background: #e8f5e9;
+      color: #1b5e20;
+    }
+
+    .status-msg.cancelado {
+      background: #ffebee;
+      color: #b71c1c;
+    }
+
+    .status-msg.pendente {
+      background: #fff8e1;
+      color: #f57f17;
+    }
+
+    .aluno-sair {
+      margin-top: 20px;
+      display: inline-block;
+      color: #999;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .aluno-sair:hover {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="aluno-pagina">
+    <div class="aluno-card">
+      <h2 id="aluno-nome">Olá!</h2>
+      <div class="subtitulo" id="aluno-matricula">Matrícula: ---</div>
+      <div class="subtitulo" id="aluno-data">Carregando...</div>
+
+      <div id="cardapio-hoje-aluno" style="background: var(--verde-claro); padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 10px;">
+        Carregando cardápio...
+      </div>
+
+      <div id="alerta-aluno" class="alerta oculto"></div>
+
+      <p style="margin-bottom:10px; font-size:16px; font-weight:600;">Você vai almoçar amanhã?</p>
+
+      <div class="opcoes">
+        <button class="opcao-btn sim" onclick="RegistroAluno.registrar(true)">
+          <span class="icone">✓</span>
+          SIM, vou almoçar
+        </button>
+        <button class="opcao-btn nao" onclick="RegistroAluno.registrar(false)">
+          <span class="icone">✗</span>
+          NÃO vou almoçar
+        </button>
+      </div>
+
+      <div id="status-registro" class="status-msg pendente">
+        Nenhuma opção registrada ainda
+      </div>
+
+      <div id="prazo-info" style="margin-top:12px; color:#999; font-size:12px;"></div>
+
+      <span class="aluno-sair" onclick="Auth.sair(); window.location.href='index.html';">Sair da minha conta</span>
+    </div>
+  </div>
+
+  <script src="js/dados-iniciais.js"></script>
+  <script src="js/database.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/registro-aluno.js"></script>
+</body>
+</html>

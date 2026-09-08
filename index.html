@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Gestão Alimentar Escolar</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .login-pagina {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--verde-primario) 0%, var(--verde-escuro) 100%);
+      padding: 16px;
+    }
+
+    .login-card {
+      background: var(--branco);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      padding: 40px;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .login-logo .icone {
+      font-size: 48px;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .login-logo h1 {
+      font-size: 22px;
+      color: var(--verde-escuro);
+    }
+
+    .login-logo p {
+      color: #666;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-pagina">
+    <div class="login-card">
+      <div class="login-logo">
+        <span class="icone">🍽️</span>
+        <h1>GESTÃO ALIMENTAR</h1>
+        <p>Escola [Nome da Escola]</p>
+      </div>
+
+      <div id="alerta-login" class="alerta oculto"></div>
+
+      <form id="form-login">
+        <div class="form-grupo">
+          <label for="usuario">Matrícula/Usuário</label>
+          <input type="text" id="usuario" name="usuario" required autocomplete="username" placeholder="Ex: 2026001 ou admin">
+        </div>
+
+        <div class="form-grupo">
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" name="senha" required autocomplete="current-password" placeholder="Digite sua senha">
+        </div>
+
+        <button type="submit" class="btn btn-primario" style="width: 100%; margin-top: 10px;" id="btn-entrar">
+          ENTRAR
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/dados-iniciais.js"></script>
+  <script src="js/database.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.getElementById("form-login").addEventListener("submit", async (evento) => {
+      evento.preventDefault();
+
+      const usuario = document.getElementById("usuario").value.trim();
+      const senha = document.getElementById("senha").value;
+      const btn = document.getElementById("btn-entrar");
+      const alerta = document.getElementById("alerta-login");
+
+      btn.disabled = true;
+      btn.textContent = "Entrando...";
+      alerta.classList.add("oculto");
+
+      try {
+        const usuarioLogado = await Auth.login(usuario, senha);
+        window.location.href = Auth.redirecionarParaPerfil(usuarioLogado);
+      } catch (erro) {
+        alerta.textContent = erro.message;
+        alerta.classList.remove("oculto");
+        alerta.className = "alerta alerta-erro";
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "ENTRAR";
+      }
+    });
+  </script>
+</body>
+</html>

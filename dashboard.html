@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel | Gestão Alimentar Escolar</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a class="navbar-marca" href="dashboard.html">🍽️ GESTÃO ALIMENTAR</a>
+      <div class="navbar-menu">
+        <a href="dashboard.html" class="ativo">Painel</a>
+        <a href="cadastro.html">Cadastro</a>
+        <a href="registro.html">Registro</a>
+        <a href="cardapio.html">Cardápio</a>
+        <a href="relatorio.html">Relatórios</a>
+        <a href="usuario.html">Usuários</a>
+      </div>
+      <div class="navbar-usuario">
+        <span id="usuario-nome">Admin</span>
+        <button class="sair" onclick="Auth.sair(); window.location.href='index.html';">Sair</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h2 style="margin: 20px 0 10px;">Painel Principal</h2>
+    <p id="data-atual" style="color: #666; margin-bottom: 20px;"></p>
+
+    <div class="grid-cards">
+      <div class="painel-card azul">
+        <div class="rotulo">Vão almoçar</div>
+        <div class="numero" id="total-vai-almocar">0</div>
+        <div class="rotulo">pessoas responderam SIM</div>
+      </div>
+      <div class="painel-card vermelho">
+        <div class="rotulo">Não vão almoçar</div>
+        <div class="numero" id="total-nao-vai-almocar">0</div>
+        <div class="rotulo">pessoas responderam NÃO</div>
+      </div>
+      <div class="painel-card">
+        <div class="rotulo">Ainda não responderam</div>
+        <div class="numero" id="total-pendentes">0</div>
+        <div class="rotulo">pessoas sem resposta</div>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+      <div class="card">
+        <div class="card-titulo">Almoço de Amanhã</div>
+        <div id="cardapio-hoje">
+          <p>Carregando...</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-titulo">Total Cadastrados</div>
+        <div id="totais-cadastrados">
+          <p>Carregando...</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 20px;">
+      <div class="card-titulo">Acesso Rápido</div>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px;">
+        <a href="cadastro.html" class="btn btn-primario">Cadastrar Pessoas</a>
+        <a href="registro.html" class="btn btn-azul">Registrar Presença</a>
+        <a href="cardapio.html" class="btn btn-amarelo">Cardápio Semanal</a>
+        <a href="relatorio.html" class="btn btn-vermelho">Ver Relatórios</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/dados-iniciais.js"></script>
+  <script src="js/database.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

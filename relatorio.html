@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatórios | Gestão Alimentar Escolar</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <style>
+    .grafico-container {
+      position: relative;
+      height: 300px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a class="navbar-marca" href="dashboard.html">🍽️ GESTÃO ALIMENTAR</a>
+      <div class="navbar-menu">
+        <a href="dashboard.html">Painel</a>
+        <a href="cadastro.html">Cadastro</a>
+        <a href="registro.html">Registro</a>
+        <a href="cardapio.html">Cardápio</a>
+        <a href="relatorio.html" class="ativo">Relatórios</a>
+        <a href="usuario.html">Usuários</a>
+      </div>
+      <div class="navbar-usuario">
+        <span id="usuario-nome">Admin</span>
+        <button class="sair" onclick="Auth.sair(); window.location.href='index.html';">Sair</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h2 style="margin: 20px 0 10px;">Relatórios</h2>
+
+    <div style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
+      <button class="btn btn-primario" onclick="Relatorio.carregar()">Atualizar</button>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo">Vão Almoçar (Últimos 7 dias)</div>
+      <div class="grafico-container">
+        <canvas id="grafico-barras"></canvas>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <div class="card-titulo">Taxa de Aproveitamento</div>
+      <div id="tabela-aproveitamento">
+        <p>Carregando...</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <div class="card-titulo">Histórico de Registros</div>
+      <div style="margin-bottom:10px;">
+        <input type="date" id="filtro-inicio">
+        <input type="date" id="filtro-fim" style="margin-left:8px;">
+        <button class="btn btn-azul" onclick="Relatorio.filtrar()" style="margin-left:8px;">Filtrar</button>
+      </div>
+      <div id="tabela-historico">
+        <p>Carregando...</p>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/dados-iniciais.js"></script>
+  <script src="js/database.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/relatorio.js"></script>
+</body>
+</html>
