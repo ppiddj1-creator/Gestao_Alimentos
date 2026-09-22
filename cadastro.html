@@ -4,77 +4,197 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro de Pessoas | Gestão Alimentar Escolar</title>
+  <link rel="icon" type="image/svg+xml" href="assets/img/logo-ga.svg">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <nav class="navbar">
-    <div class="navbar-container">
-      <a class="navbar-marca" href="dashboard.html">🍽️ GESTÃO ALIMENTAR</a>
-      <div class="navbar-menu">
-        <a href="dashboard.html">Painel</a>
-        <a href="cadastro.html" class="ativo">Cadastro</a>
-        <a href="registro.html">Registro</a>
-        <a href="cardapio.html">Cardápio</a>
-        <a href="relatorio.html">Relatórios</a>
-        <a href="usuario.html">Usuários</a>
-      </div>
-      <div class="navbar-usuario">
-        <span id="usuario-nome">Admin</span>
-        <button class="sair" onclick="Auth.sair(); window.location.href='index.html';">Sair</button>
+    <div class="navbar-conteudo">
+      <a href="dashboard.html" class="navbar-marca">
+        <img src="assets/img/logo-ga-branca.svg" alt="Logo Gestão Alimentar Escolar" class="navbar-logo">
+        <span class="navbar-texto">
+          <strong>Gestão Alimentar</strong>
+          <small>Escolar</small>
+        </span>
+      </a>
+      <button class="menu-toggle" id="btn-menu" aria-label="Abrir ou fechar menu" aria-expanded="false">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="4" y1="7" x2="20" y2="7"/>
+          <line x1="4" y1="12" x2="20" y2="12"/>
+          <line x1="4" y1="17" x2="20" y2="17"/>
+        </svg>
+      </button>
+      <ul class="navbar-menu" id="navbar-menu">
+        <li><a href="dashboard.html">Painel</a></li>
+        <li><a href="cadastro.html" class="ativo">Cadastro</a></li>
+        <li><a href="registro.html">Registro</a></li>
+        <li><a href="cardapio.html">Cardápio</a></li>
+        <li><a href="relatorio.html">Relatórios</a></li>
+        <li><a href="usuario.html">Usuários</a></li>
+      </ul>
+      <div class="navbar-acoes">
+        <div class="navbar-usuario">
+          <span class="avatar" id="avatar-usuario"></span>
+          <span class="nome-usuario" id="usuario-nome">Admin</span>
+          <button class="btn-sair" onclick="Auth.sair(); window.location.href='index.html';">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span>Sair</span>
+          </button>
+        </div>
       </div>
     </div>
   </nav>
 
   <main class="container">
-    <h2 style="margin: 20px 0 10px;">Cadastro de Pessoas</h2>
+    <header class="pagina-cabecalho">
+      <div>
+        <h1 class="pagina-titulo">Cadastro de Pessoas</h1>
+        <p class="pagina-subtitulo">Cadastre estudantes, professores e funcionários para o controle do almoço.</p>
+      </div>
+      <div class="pagina-acoes">
+        <button type="button" class="btn btn-cinza" onclick="Cadastro.limparForm()">Limpar formulário</button>
+      </div>
+    </header>
+
+    <div id="alerta-cadastro" class="alerta oculto"></div>
 
     <div class="card">
-      <div class="card-titulo">Nova Pessoa</div>
-      <div id="alerta-cadastro" class="alerta oculto"></div>
-      <form id="form-cadastro">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-          <div class="form-grupo">
-            <label for="nome">Nome Completo</label>
-            <input type="text" id="nome" required placeholder="Nome da pessoa">
-          </div>
-          <div class="form-grupo">
-            <label for="categoria">Categoria</label>
-            <select id="categoria" required>
-              <option value="">Selecione...</option>
-              <option value="aluno">Aluno</option>
-              <option value="professor">Professor</option>
-              <option value="funcionario">Funcionário</option>
-            </select>
-          </div>
-          <div class="form-grupo">
-            <label for="turmaSetor">Turma / Setor</label>
-            <input type="text" id="turmaSetor" required placeholder="Ex: 3º Ano A, Limpeza">
-          </div>
-          <div class="form-grupo">
-            <label for="matricula">Matrícula</label>
-            <input type="text" id="matricula" required placeholder="Ex: 2026001">
-          </div>
-          <div class="form-grupo">
-            <label for="telefone">Telefone (opcional)</label>
-            <input type="text" id="telefone" placeholder="(11) 99999-0000">
-          </div>
-          <div class="form-grupo">
-            <label for="senha-cadastro">Senha</label>
-            <input type="text" id="senha-cadastro" value="123456" required>
-          </div>
+      <div class="card-titulo">
+        <span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <line x1="19" y1="8" x2="19" y2="14"/>
+            <line x1="22" y1="11" x2="16" y2="11"/>
+          </svg>
+          Nova Pessoa
+        </span>
+        <span class="badge badge-suave">obrigatório *</span>
+      </div>
+
+      <form id="form-cadastro" class="form-grade">
+        <div class="campo-fla">
+          <span class="campo-icone">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </span>
+          <input type="text" id="nome" required placeholder=" ">
+          <label for="nome">Nome Completo</label>
         </div>
-        <button type="submit" class="btn btn-primario" style="margin-top: 10px;">Salvar</button>
-        <button type="button" class="btn" style="margin-top: 10px; background:#ccc;" onclick="Cadastro.limparForm()">Limpar</button>
+
+        <div class="campo-fla">
+          <span class="campo-icone">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20 7h-9"/>
+              <path d="M14 17H5"/>
+              <circle cx="17" cy="17" r="3"/>
+              <circle cx="7" cy="7" r="3"/>
+            </svg>
+          </span>
+          <select id="categoria" required>
+            <option value=""></option>
+            <option value="aluno">Aluno</option>
+            <option value="professor">Professor</option>
+            <option value="funcionario">Funcionário</option>
+          </select>
+          <label for="categoria">Categoria</label>
+        </div>
+
+        <div class="campo-fla">
+          <span class="campo-icone">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m4 10 8-6 8 6"/>
+              <path d="M6 9v11h12V9"/>
+            </svg>
+          </span>
+          <input type="text" id="turmaSetor" required placeholder=" ">
+          <label for="turmaSetor">Turma / Setor</label>
+        </div>
+
+        <div class="campo-fla">
+          <span class="campo-icone">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="4" y1="9" x2="20" y2="9"/>
+              <line x1="4" y1="15" x2="20" y2="15"/>
+              <line x1="10" y1="3" x2="8" y2="21"/>
+              <line x1="16" y1="3" x2="14" y2="21"/>
+            </svg>
+          </span>
+          <input type="text" id="matricula" required placeholder=" ">
+          <label for="matricula">Matrícula</label>
+        </div>
+
+        <div class="campo-fla">
+          <span class="campo-icone">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92Z"/>
+            </svg>
+          </span>
+          <input type="text" id="telefone" placeholder=" ">
+          <label for="telefone">Telefone (opcional)</label>
+        </div>
+
+        <div class="campo-fla">
+          <span class="campo-icone">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </span>
+          <input type="text" id="senha-cadastro" value="123456" required placeholder=" ">
+          <label for="senha-cadastro">Senha</label>
+        </div>
+
+        <div class="form-acoes">
+          <button type="submit" class="btn btn-primario">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/>
+              <polyline points="17 21 17 13 7 13 7 21"/>
+              <polyline points="7 3 7 8 15 8"/>
+            </svg>
+            Salvar
+          </button>
+          <button type="button" class="btn btn-cinza" onclick="Cadastro.limparForm()">Limpar</button>
+        </div>
       </form>
     </div>
 
     <div class="card">
-      <div class="card-titulo">Pessoas Cadastradas</div>
-      <div style="margin-bottom: 10px;">
-        <input type="text" id="busca-pessoas" placeholder="Buscar por nome, matrícula ou categoria..." style="width: 100%; padding: 10px; border:1px solid #ccc; border-radius: 8px;">
+      <div class="card-titulo">
+        <span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          Pessoas Cadastradas
+        </span>
+        <span class="badge badge-suave">busca em tempo real</span>
       </div>
-      <div id="tabela-pessoas">
-        <p>Carregando...</p>
+
+      <div class="busca-campo">
+        <span class="busca-icone">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </span>
+        <input type="text" id="busca-pessoas" placeholder="Buscar por nome, matrícula ou categoria...">
+      </div>
+
+      <div class="tabela-rolagem">
+        <div id="tabela-pessoas">
+          <div class="skeleton" style="height:48px; margin-bottom:10px;"></div>
+          <div class="skeleton" style="height:48px; margin-bottom:10px;"></div>
+          <div class="skeleton" style="height:48px;"></div>
+        </div>
       </div>
     </div>
   </main>
@@ -83,5 +203,6 @@
   <script src="js/database.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/cadastro.js"></script>
+  <script src="js/ui.js"></script>
 </body>
 </html>

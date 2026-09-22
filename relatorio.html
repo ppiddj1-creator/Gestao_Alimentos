@@ -4,72 +4,208 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Relatórios | Gestão Alimentar Escolar</title>
+  <link rel="icon" type="image/svg+xml" href="assets/img/logo-ga.svg">
   <link rel="stylesheet" href="css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
-  <style>
-    .grafico-container {
-      position: relative;
-      height: 300px;
-      margin-top: 10px;
-    }
-  </style>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="navbar-container">
-      <a class="navbar-marca" href="dashboard.html">🍽️ GESTÃO ALIMENTAR</a>
-      <div class="navbar-menu">
-        <a href="dashboard.html">Painel</a>
-        <a href="cadastro.html">Cadastro</a>
-        <a href="registro.html">Registro</a>
-        <a href="cardapio.html">Cardápio</a>
-        <a href="relatorio.html" class="ativo">Relatórios</a>
-        <a href="usuario.html">Usuários</a>
-      </div>
-      <div class="navbar-usuario">
-        <span id="usuario-nome">Admin</span>
-        <button class="sair" onclick="Auth.sair(); window.location.href='index.html';">Sair</button>
+  <nav class="navbar nao-imprimir">
+    <div class="navbar-conteudo">
+      <a href="dashboard.html" class="navbar-marca">
+        <img src="assets/img/logo-ga-branca.svg" alt="Logo Gestão Alimentar Escolar" class="navbar-logo">
+        <span class="navbar-texto">
+          <strong>Gestão Alimentar</strong>
+          <small>Escolar</small>
+        </span>
+      </a>
+      <button class="menu-toggle" id="btn-menu" aria-label="Abrir ou fechar menu" aria-expanded="false">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="4" y1="7" x2="20" y2="7"/>
+          <line x1="4" y1="12" x2="20" y2="12"/>
+          <line x1="4" y1="17" x2="20" y2="17"/>
+        </svg>
+      </button>
+      <ul class="navbar-menu" id="navbar-menu">
+        <li><a href="dashboard.html">Painel</a></li>
+        <li><a href="cadastro.html">Cadastro</a></li>
+        <li><a href="registro.html">Registro</a></li>
+        <li><a href="cardapio.html">Cardápio</a></li>
+        <li><a href="relatorio.html" class="ativo">Relatórios</a></li>
+        <li><a href="usuario.html">Usuários</a></li>
+      </ul>
+      <div class="navbar-acoes">
+        <div class="navbar-usuario">
+          <span class="avatar" id="avatar-usuario"></span>
+          <span class="nome-usuario" id="usuario-nome">Admin</span>
+          <button class="btn-sair" onclick="Auth.sair(); window.location.href='index.html';">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span>Sair</span>
+          </button>
+        </div>
       </div>
     </div>
   </nav>
 
   <main class="container">
-    <h2 style="margin: 20px 0 10px;">Relatórios</h2>
+    <header class="pagina-cabecalho">
+      <div>
+        <h1 class="pagina-titulo">Relatórios</h1>
+        <p class="pagina-subtitulo">Acompanhe o aproveitamento e o histórico de confirmações do almoço.</p>
+      </div>
+      <div class="pagina-acoes">
+        <button class="btn btn-primario nao-imprimir" onclick="RelatorioExtra.exportarPDF()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 17v1a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-1"/>
+            <path d="M3 12h18"/>
+            <path d="M16 6l-4-4-4 4"/>
+            <path d="M12 2v12"/>
+          </svg>
+          Exportar PDF
+        </button>
+      </div>
+    </header>
 
-    <div style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
-      <button class="btn btn-primario" onclick="Relatorio.carregar()">Atualizar</button>
+    <div class="relatorio-filtros card nao-imprimir">
+      <div class="form-grupo">
+        <label for="filtro-inicio">De</label>
+        <div class="controle">
+          <span class="controle-icone">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </span>
+          <input type="date" id="filtro-inicio" class="com-ico">
+        </div>
+      </div>
+      <div class="form-grupo">
+        <label for="filtro-fim">Até</label>
+        <div class="controle">
+          <span class="controle-icone">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </span>
+          <input type="date" id="filtro-fim" class="com-ico">
+        </div>
+      </div>
+      <div class="form-grupo relatorio-select">
+        <label for="filtro-turma">Turma / Setor</label>
+        <div class="controle">
+          <select id="filtro-turma">
+            <option value="">Todas as turmas/setores</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grupo relatorio-select">
+        <label for="filtro-categoria">Categoria</label>
+        <div class="controle">
+          <select id="filtro-categoria">
+            <option value="">Todas as categorias</option>
+            <option value="aluno">Aluno</option>
+            <option value="professor">Professor</option>
+            <option value="funcionario">Funcionário</option>
+          </select>
+        </div>
+      </div>
+      <div class="relatorio-acoes">
+        <button class="btn btn-primario" onclick="Relatorio.carregar()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          Filtrar
+        </button>
+        <button class="btn btn-cinza" onclick="RelatorioExtra.filtrar()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+            <polyline points="7 3 7 8 15 8"/>
+          </svg>
+          Aplicar histórico
+        </button>
+      </div>
     </div>
 
-    <div class="card">
-      <div class="card-titulo">Vão Almoçar (Últimos 7 dias)</div>
-      <div class="grafico-container">
+    <div id="alerta-relatorio" class="alerta oculto"></div>
+
+    <section class="card">
+      <div class="card-titulo">
+        <span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 3v18h18"/>
+            <path d="m7 15-2-3-2 2V4h3"/>
+            <path d="M21 17l-5-8-3 5-3-7-3 10h14Z"/>
+          </svg>
+          Aproveitamento por Período
+        </span>
+        <span class="badge badge-suave">confirmações por dia</span>
+      </div>
+      <div class="grafico-container grafico-alto">
         <canvas id="grafico-barras"></canvas>
       </div>
-    </div>
+      <div class="tabela-rolagem">
+        <div id="tabela-aproveitamento">
+          <div class="skeleton" style="height:46px; margin-bottom:10px;"></div>
+          <div class="skeleton" style="height:46px; margin-bottom:10px;"></div>
+          <div class="skeleton" style="height:46px;"></div>
+        </div>
+      </div>
+    </section>
 
-    <div class="card" style="margin-top:20px;">
-      <div class="card-titulo">Taxa de Aproveitamento</div>
-      <div id="tabela-aproveitamento">
-        <p>Carregando...</p>
+    <section class="grade-dois">
+      <div class="card">
+        <div class="card-titulo">
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            Distribuição por Categoria
+          </span>
+          <span class="badge badge-suave">público cadastrado</span>
+        </div>
+        <div class="grafico-container grafico-pizza">
+          <canvas id="grafico-pizza"></canvas>
+        </div>
       </div>
-    </div>
 
-    <div class="card" style="margin-top:20px;">
-      <div class="card-titulo">Histórico de Registros</div>
-      <div style="margin-bottom:10px;">
-        <input type="date" id="filtro-inicio">
-        <input type="date" id="filtro-fim" style="margin-left:8px;">
-        <button class="btn btn-azul" onclick="Relatorio.filtrar()" style="margin-left:8px;">Filtrar</button>
+      <div class="card">
+        <div class="card-titulo">
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="20" x2="12" y2="10"/>
+              <line x1="18" y1="20" x2="18" y2="4"/>
+              <line x1="6" y1="20" x2="6" y2="16"/>
+            </svg>
+          </span>
+          Histórico
+        </span>
+        <div class="tabela-rolagem" id="tabela-historico">
+          <div class="skeleton" style="height:44px; margin-bottom:10px;"></div>
+          <div class="skeleton" style="height:44px; margin-bottom:10px;"></div>
+          <div class="skeleton" style="height:44px;"></div>
+        </div>
       </div>
-      <div id="tabela-historico">
-        <p>Carregando...</p>
-      </div>
-    </div>
+    </section>
   </main>
 
   <script src="js/dados-iniciais.js"></script>
   <script src="js/database.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/relatorio.js"></script>
+  <script src="js/relatorio-extra.js"></script>
+  <script src="js/ui.js"></script>
 </body>
 </html>

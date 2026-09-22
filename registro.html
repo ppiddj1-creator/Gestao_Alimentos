@@ -4,61 +4,143 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registro Diário | Gestão Alimentar Escolar</title>
+  <link rel="icon" type="image/svg+xml" href="assets/img/logo-ga.svg">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <nav class="navbar">
-    <div class="navbar-container">
-      <a class="navbar-marca" href="dashboard.html">🍽️ GESTÃO ALIMENTAR</a>
-      <div class="navbar-menu">
-        <a href="dashboard.html">Painel</a>
-        <a href="cadastro.html">Cadastro</a>
-        <a href="registro.html" class="ativo">Registro</a>
-        <a href="cardapio.html">Cardápio</a>
-        <a href="relatorio.html">Relatórios</a>
-        <a href="usuario.html">Usuários</a>
-      </div>
-      <div class="navbar-usuario">
-        <span id="usuario-nome">Admin</span>
-        <button class="sair" onclick="Auth.sair(); window.location.href='index.html';">Sair</button>
+    <div class="navbar-conteudo">
+      <a href="dashboard.html" class="navbar-marca">
+        <img src="assets/img/logo-ga-branca.svg" alt="Logo Gestão Alimentar Escolar" class="navbar-logo">
+        <span class="navbar-texto">
+          <strong>Gestão Alimentar</strong>
+          <small>Escolar</small>
+        </span>
+      </a>
+      <button class="menu-toggle" id="btn-menu" aria-label="Abrir ou fechar menu" aria-expanded="false">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="4" y1="7" x2="20" y2="7"/>
+          <line x1="4" y1="12" x2="20" y2="12"/>
+          <line x1="4" y1="17" x2="20" y2="17"/>
+        </svg>
+      </button>
+      <ul class="navbar-menu" id="navbar-menu">
+        <li><a href="dashboard.html">Painel</a></li>
+        <li><a href="cadastro.html">Cadastro</a></li>
+        <li><a href="registro.html" class="ativo">Registro</a></li>
+        <li><a href="cardapio.html">Cardápio</a></li>
+        <li><a href="relatorio.html">Relatórios</a></li>
+        <li><a href="usuario.html">Usuários</a></li>
+      </ul>
+      <div class="navbar-acoes">
+        <div class="navbar-usuario">
+          <span class="avatar" id="avatar-usuario"></span>
+          <span class="nome-usuario" id="usuario-nome">Admin</span>
+          <button class="btn-sair" onclick="Auth.sair(); window.location.href='index.html';">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span>Sair</span>
+          </button>
+        </div>
       </div>
     </div>
   </nav>
 
   <main class="container">
-    <h2 style="margin: 20px 0 10px;">Registro Diário de Almoço</h2>
+    <header class="pagina-cabecalho">
+      <div>
+        <h1 class="pagina-titulo">Registro Diário de Almoço</h1>
+        <p class="pagina-subtitulo">Registre quem vai almoçar. Os toggles salvam automaticamente.</p>
+      </div>
+    </header>
 
     <div class="card">
-      <div class="card-titulo">Selecionar Data</div>
-      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-        <div class="form-grupo" style="margin-bottom:0;">
+      <div class="card-titulo">
+        <span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          Selecionar Data
+        </span>
+      </div>
+      <div class="registro-bar">
+        <div class="form-grupo">
           <label for="data-registro">Data do registro</label>
-          <input type="date" id="data-registro" required>
+          <div class="controle">
+            <span class="controle-icone">
+              <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </span>
+            <input type="date" id="data-registro" class="com-ico" required>
+          </div>
         </div>
-        <div style="margin-top:20px;">
-          <button class="btn btn-primario" onclick="Registro.carregarPessoas()">Carregar Pessoas</button>
-          <button class="btn btn-azul" onclick="Registro.salvar()" style="margin-left:8px;">Salvar Registro</button>
+        <div class="forma-botoes">
+          <button class="btn btn-primario" onclick="Registro.carregarPessoas()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <line x1="19" y1="8" x2="19" y2="14"/>
+              <line x1="22" y1="11" x2="16" y2="11"/>
+            </svg>
+            Carregar Pessoas
+          </button>
+          <button class="btn btn-azul" onclick="Registro.salvar()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/>
+              <polyline points="17 21 17 13 7 13 7 21"/>
+              <polyline points="7 3 7 8 15 8"/>
+            </svg>
+            Salvar Registro
+          </button>
         </div>
       </div>
-      <p style="margin-top:10px; color:#666; font-size:13px;">* Registros são feitos para o dia seguinte. Na tela de cada aluno:</p>
-      <p style="color:#666; font-size:13px;">  - <strong>SIM</strong> = vai almoçar | <strong>NÃO</strong> = não vai almoçar</p>
+      <p class="nota">📌 Registros são feitos para o dia seguinte. <strong>SIM</strong> = vai almoçar · <strong>NÃO</strong> = não vai almoçar. Depois de carregar a lista, alterar qualquer toggle salva na hora.</p>
     </div>
 
     <div id="alerta-registro" class="alerta oculto"></div>
 
     <div class="card" id="card-lista" style="display:none;">
       <div class="card-titulo">
-        Lista de Pessoas
-        <span style="float:right; font-size:13px; font-weight:normal;">
-          <label><input type="checkbox" id="marcar-todos"> Marcar todos "SIM"</label>
+        <span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M8 6h13"/>
+            <path d="M8 12h13"/>
+            <path d="M8 18h13"/>
+            <path d="M3 6h.01"/>
+            <path d="M3 12h.01"/>
+            <path d="M3 18h.01"/>
+          </svg>
+          Lista de Pessoas
         </span>
+        <label class="marcar-todos-label">
+          <input type="checkbox" id="marcar-todos">
+          Marcar todos "SIM"
+        </label>
       </div>
-      <div id="lista-pessoas-registro">
-        <p>Selecione uma data e clique em "Carregar Pessoas".</p>
+      <div class="tabela-rolagem">
+        <div id="lista-pessoas-registro">
+          <div class="skeleton" style="height:46px; margin-bottom:10px;"></div>
+          <div class="skeleton" style="height:46px; margin-bottom:10px;"></div>
+          <div class="skeleton" style="height:46px;"></div>
+        </div>
       </div>
-      <div style="margin-top:15px; padding-top:15px; border-top:1px solid #eee;">
-        <strong>Resumo: </strong>
-        <span id="resumo-registros">-</span>
+      <div class="resumo-registro">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m9 11 3 3L22 4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+        <strong>Resumo:</strong>
+        <span id="resumo-registros">—</span>
       </div>
     </div>
   </main>
@@ -67,5 +149,7 @@
   <script src="js/database.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/registro.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/registro-ui.js"></script>
 </body>
 </html>

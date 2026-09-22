@@ -3,108 +3,104 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login | Gestão Alimentar Escolar</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>">
+  <title>Acesso Restrito | Gestão Alimentar Escolar</title>
+  <link rel="icon" type="image/svg+xml" href="assets/img/logo-escola.svg">
   <link rel="stylesheet" href="css/style.css">
-  <style>
-    .login-pagina {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, var(--verde-primario) 0%, var(--verde-escuro) 100%);
-      padding: 16px;
-    }
-
-    .login-card {
-      background: var(--branco);
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      padding: 40px;
-      max-width: 400px;
-      width: 100%;
-    }
-
-    .login-logo {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-
-    .login-logo .icone {
-      font-size: 48px;
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    .login-logo h1 {
-      font-size: 22px;
-      color: var(--verde-escuro);
-    }
-
-    .login-logo p {
-      color: #666;
-      font-size: 14px;
-      margin-top: 4px;
-    }
-  </style>
+  <link rel="stylesheet" href="css/login.css">
 </head>
-<body>
-  <div class="login-pagina">
-    <div class="login-card">
-      <div class="login-logo">
-        <span class="icone">🍽️</span>
-        <h1>GESTÃO ALIMENTAR</h1>
-        <p>Escola [Nome da Escola]</p>
+<body class="login-corpo">
+  <header class="login-topo">
+    <div class="login-topo-esquerda">
+      <img src="assets/img/logo-escola.svg" alt="Logo da escola" class="login-topo-logo">
+      <div class="login-topo-textos">
+        <strong class="login-topo-nome">Nome da Escola</strong>
+        <span class="login-topo-sub">Gestão Alimentar Escolar</span>
       </div>
+    </div>
+    <div class="login-topo-direita">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+      <span>Acesso Restrito</span>
+    </div>
+  </header>
+
+  <main class="login-fundo">
+    <div class="login-frase">
+      <p class="login-frase-texto">“Alimentação de qualidade também é educação.”</p>
+      <span class="login-frase-linha"></span>
+    </div>
+
+    <section class="login-card">
+      <div class="login-logo">
+        <img src="assets/img/logo-escola.svg" alt="Logo da escola">
+      </div>
+
+      <h1 class="login-titulo">Faça seu login</h1>
+      <p class="login-subtitulo">Acesse o sistema para gerenciar a alimentação escolar.</p>
 
       <div id="alerta-login" class="alerta oculto"></div>
 
       <form id="form-login">
         <div class="form-grupo">
           <label for="usuario">Matrícula/Usuário</label>
-          <input type="text" id="usuario" name="usuario" required autocomplete="username" placeholder="Ex: 2026001 ou admin">
+          <div class="campo">
+            <span class="campo-icone">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </span>
+            <input type="text" id="usuario" name="usuario" required autocomplete="username" placeholder="Matrícula/Usuário">
+          </div>
         </div>
 
         <div class="form-grupo">
           <label for="senha">Senha</label>
-          <input type="password" id="senha" name="senha" required autocomplete="current-password" placeholder="Digite sua senha">
+          <div class="campo">
+            <span class="campo-icone">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="11" width="18" height="11" rx="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </span>
+            <input type="password" id="senha" name="senha" required autocomplete="current-password" placeholder="Digite sua senha">
+            <button type="button" class="campo-olho" id="btn-olho" aria-label="Mostrar ou ocultar senha">
+              <svg class="ico-olho-aberto" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg class="ico-olho-fechado" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>
+                <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 0 1-5.53-1.48"/>
+                <path d="M6.61 6.61A17.8 17.8 0 0 0 1 12s4 8 11 8a9.94 9.94 0 0 0 5.39-1.61"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
         </div>
 
-        <button type="submit" class="btn btn-primario" style="width: 100%; margin-top: 10px;" id="btn-entrar">
-          ENTRAR
+        <button type="submit" class="login-botao" id="btn-entrar">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          <span class="login-botao-texto">Entrar</span>
         </button>
       </form>
-    </div>
-  </div>
+    </section>
+  </main>
+
+  <footer class="login-rodape">
+    <span>🛡 Uso exclusivo para a comunidade escolar</span>
+    <span>🌿 Mais organização, menos desperdício.</span>
+  </footer>
 
   <script src="js/dados-iniciais.js"></script>
   <script src="js/database.js"></script>
   <script src="js/auth.js"></script>
-  <script>
-    document.getElementById("form-login").addEventListener("submit", async (evento) => {
-      evento.preventDefault();
-
-      const usuario = document.getElementById("usuario").value.trim();
-      const senha = document.getElementById("senha").value;
-      const btn = document.getElementById("btn-entrar");
-      const alerta = document.getElementById("alerta-login");
-
-      btn.disabled = true;
-      btn.textContent = "Entrando...";
-      alerta.classList.add("oculto");
-
-      try {
-        const usuarioLogado = await Auth.login(usuario, senha);
-        window.location.href = Auth.redirecionarParaPerfil(usuarioLogado);
-      } catch (erro) {
-        alerta.textContent = erro.message;
-        alerta.classList.remove("oculto");
-        alerta.className = "alerta alerta-erro";
-      } finally {
-        btn.disabled = false;
-        btn.textContent = "ENTRAR";
-      }
-    });
-  </script>
+  <script src="js/login.js"></script>
 </body>
 </html>

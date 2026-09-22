@@ -3,160 +3,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meu Registro | Gestão Alimentar Escolar</title>
+  <title>Confirmação de Almoço | Gestão Alimentar Escolar</title>
+  <link rel="icon" type="image/svg+xml" href="assets/img/logo-ga.svg">
   <link rel="stylesheet" href="css/style.css">
-  <style>
-    body { background-color: #fff; }
-
-    .aluno-pagina {
-      min-height: 100vh;
-      background: linear-gradient(135deg, var(--verde-primario) 0%, var(--verde-escuro) 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
-
-    .aluno-card {
-      background: var(--branco);
-      border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      padding: 30px;
-      max-width: 420px;
-      width: 100%;
-      text-align: center;
-    }
-
-    .aluno-card h2 {
-      color: var(--verde-escuro);
-      margin-bottom: 8px;
-    }
-
-    .aluno-card .subtitulo {
-      color: #666;
-      font-size: 14px;
-      margin-bottom: 20px;
-    }
-
-    .opcoes {
-      display: flex;
-      gap: 16px;
-      margin: 20px 0;
-    }
-
-    .opcao-btn {
-      flex: 1;
-      padding: 30px 16px;
-      border: 3px solid #ccc;
-      border-radius: 12px;
-      background: var(--branco);
-      cursor: pointer;
-      transition: all 0.3s;
-      font-size: 16px;
-      font-weight: 700;
-    }
-
-    .opcao-btn .icone {
-      font-size: 32px;
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    .opcao-btn.sim {
-      border-color: #4caf50;
-      color: #2e7d32;
-    }
-
-    .opcao-btn.sim.selecionado {
-      background: #e8f5e9;
-      border-color: #2e7d32;
-    }
-
-    .opcao-btn.nao {
-      border-color: #ef5350;
-      color: #c62828;
-    }
-
-    .opcao-btn.nao.selecionado {
-      background: #ffebee;
-      border-color: #c62828;
-    }
-
-    .status-msg {
-      margin-top: 16px;
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 14px;
-    }
-
-    .status-msg.confirmado {
-      background: #e8f5e9;
-      color: #1b5e20;
-    }
-
-    .status-msg.cancelado {
-      background: #ffebee;
-      color: #b71c1c;
-    }
-
-    .status-msg.pendente {
-      background: #fff8e1;
-      color: #f57f17;
-    }
-
-    .aluno-sair {
-      margin-top: 20px;
-      display: inline-block;
-      color: #999;
-      font-size: 13px;
-      cursor: pointer;
-      text-decoration: underline;
-    }
-
-    .aluno-sair:hover {
-      color: #333;
-    }
-  </style>
 </head>
-<body>
-  <div class="aluno-pagina">
-    <div class="aluno-card">
-      <h2 id="aluno-nome">Olá!</h2>
-      <div class="subtitulo" id="aluno-matricula">Matrícula: ---</div>
-      <div class="subtitulo" id="aluno-data">Carregando...</div>
-
-      <div id="cardapio-hoje-aluno" style="background: var(--verde-claro); padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 10px;">
-        Carregando cardápio...
+<body class="pagina-aluno">
+  <div class="aluno-banner">
+    <div class="aluno-barra">
+      <span class="aluno-marca">
+        <img src="assets/img/logo-ga-branca.svg" alt="Logo Gestão Alimentar Escolar" class="navbar-logo">
+        <span class="navbar-texto">
+          <strong>Gestão Alimentar</strong>
+          <small>Escolar</small>
+        </span>
+      </span>
+      <a class="aluno-sair" href="index.html" onclick="Auth.sair(); return true;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Sair
+      </a>
+    </div>
+    <div class="aluno-conteudo">
+      <div class="aluno-titulo">
+        <span class="aluno-avatar">🙋</span>
+        <div>
+          <h1 id="aluno-nome">Olá!</h1>
+          <p id="aluno-matricula">Matrícula: —</p>
+        </div>
       </div>
+      <p class="aluno-cartao" id="aluno-data"></p>
+      <p class="aluno-cardapio" id="cardapio-hoje-aluno"></p>
+    </div>
+  </div>
 
-      <div id="alerta-aluno" class="alerta oculto"></div>
+  <main class="aluno-corpo">
+    <section class="aluno-card">
+      <h2>Você vai almoçar amanhã?</h2>
+      <p class="aluno-sub">Confirme sua presença para o almoço. Você pode alterar até às 23h59 de hoje.</p>
 
-      <p style="margin-bottom:10px; font-size:16px; font-weight:600;">Você vai almoçar amanhã?</p>
-
-      <div class="opcoes">
-        <button class="opcao-btn sim" onclick="RegistroAluno.registrar(true)">
-          <span class="icone">✓</span>
+      <div class="opcao-grupo">
+        <button type="button" class="opcao-btn sim" onclick="RegistroAluno.registrar(true)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 6 9 17l-5-5"/>
+          </svg>
           SIM, vou almoçar
         </button>
-        <button class="opcao-btn nao" onclick="RegistroAluno.registrar(false)">
-          <span class="icone">✗</span>
+        <button type="button" class="opcao-btn nao" onclick="RegistroAluno.registrar(false)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 6 6 18"/>
+            <path d="m6 6 12 12"/>
+          </svg>
           NÃO vou almoçar
         </button>
       </div>
 
-      <div id="status-registro" class="status-msg pendente">
-        Nenhuma opção registrada ainda
-      </div>
+      <div id="alerta-aluno" class="alerta alerta-sucesso oculto"></div>
 
-      <div id="prazo-info" style="margin-top:12px; color:#999; font-size:12px;"></div>
+      <p id="status-registro" class="status-msg pendente">Nenhuma opção registrada ainda</p>
+      <p id="prazo-info" class="prazo-info">Prazo: até 23h59 de hoje.</p>
+    </section>
 
-      <span class="aluno-sair" onclick="Auth.sair(); window.location.href='index.html';">Sair da minha conta</span>
-    </div>
-  </div>
+    <p class="aluno-rodape">🌿 Gestão Alimentar Escolar · contamos com você!</p>
+  </main>
 
   <script src="js/dados-iniciais.js"></script>
   <script src="js/database.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/registro-aluno.js"></script>
+  <script src="js/ui.js"></script>
 </body>
 </html>
