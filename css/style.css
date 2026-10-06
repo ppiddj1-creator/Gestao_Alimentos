@@ -626,6 +626,7 @@ a {
 
 .campo-fla input:focus + label,
 .campo-fla input:not(:placeholder-shown) + label,
+.campo-fla input[type="date"]:valid + label,
 .campo-fla textarea:focus + label,
 .campo-fla textarea:not(:placeholder-shown) + label,
 .campo-fla select:focus + label,

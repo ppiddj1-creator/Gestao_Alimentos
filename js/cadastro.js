@@ -29,44 +29,72 @@ const Cadastro = {
   async salvar() {
     const nome = document.getElementById("nome").value.trim();
     const categoria = document.getElementById("categoria").value;
+    const dataNascimento = document.getElementById("dataNascimento").value;
     const turmaSetor = document.getElementById("turmaSetor").value.trim();
-    const matricula = document.getElementById("matricula").value.trim();
-    const telefone = document.getElementById("telefone").value.trim();
-    const senha = document.getElementById("senha-cadastro").value;
 
-    if (!nome || !categoria || !turmaSetor || !matricula || !senha) {
-      this._mostrarAlerta("Preencha todos os campos obrigatórios.", "erro");
+    if (!nome || !categoria) {
+      this._mostrarAlerta("Preencha o nome e a categoria.", "erro");
       return;
     }
 
-    const dados = {
-      nome,
-      categoria,
-      turmaSetor,
-      matricula,
-      telefone,
-      senha,
-      criadoEm: new Date().toISOString().split("T")[0]
-    };
+    if (!this.editandoId && !dataNascimento) {
+      this._mostrarAlerta("Informe a data de nascimento (será a senha).", "erro");
+      return;
+    }
+
+    const hoje = new Date().toISOString().split("T")[0];
+    if (dataNascimento && dataNascimento > hoje) {
+      this._mostrarAlerta("A data de nascimento não pode ser no futuro.", "erro");
+      return;
+    }
+
+    const dados = { nome, categoria, turmaSetor };
+    if (dataNascimento) {
+      dados.dataNascimento = dataNascimento;
+      dados.senha = this._nascimentoParaSenha(dataNascimento);
+    }
 
     try {
       if (this.editandoId) {
         await Database.atualizar("pessoas", this.editandoId, dados);
         this._mostrarAlerta("Pessoa atualizada com sucesso!", "sucesso");
       } else {
-        const existente = await Database.buscarPorCampo("pessoas", "matricula", matricula);
-        if (existente.length > 0) {
-          this._mostrarAlerta("Já existe uma pessoa com essa matrícula.", "erro");
-          return;
-        }
+        const matricula = await this._gerarMatricula();
+        dados.matricula = matricula;
+        dados.criadoEm = hoje;
         await Database.adicionar("pessoas", dados);
-        this._mostrarAlerta("Pessoa cadastrada com sucesso!", "sucesso");
+        this._mostrarAlerta(
+          "Pessoa cadastrada! Matrícula: " + matricula + " · Senha: " + dados.senha,
+          "sucesso",
+          10000
+        );
       }
       this.limparForm();
       this.carregar();
     } catch (erro) {
       this._mostrarAlerta("Erro ao salvar: " + erro.message, "erro");
     }
+  },
+
+  // Matrícula sequencial no formato AAAA+XXX (ex.: 2026006)
+  async _gerarMatricula() {
+    const pessoas = await Database.getColecao("pessoas");
+    const ano = String(new Date().getFullYear());
+    let maior = 0;
+    pessoas.forEach((p) => {
+      const m = String(p.matricula || "");
+      if (m.startsWith(ano)) {
+        const n = parseInt(m, 10);
+        if (!isNaN(n) && n > maior) maior = n;
+      }
+    });
+    return maior > 0 ? String(maior + 1) : ano + "001";
+  },
+
+  // "2010-03-15" -> "15032010"
+  _nascimentoParaSenha(dataNascimento) {
+    const [ano, mes, dia] = dataNascimento.split("-");
+    return dia + mes + ano;
   },
 
   async editar(id) {
@@ -76,10 +104,10 @@ const Cadastro = {
     this.editandoId = id;
     document.getElementById("nome").value = pessoa.nome;
     document.getElementById("categoria").value = pessoa.categoria;
-    document.getElementById("turmaSetor").value = pessoa.turmaSetor;
-    document.getElementById("matricula").value = pessoa.matricula;
-    document.getElementById("telefone").value = pessoa.telefone || "";
-    document.getElementById("senha-cadastro").value = pessoa.senha;
+    document.getElementById("turmaSetor").value = pessoa.turmaSetor || "";
+    document.getElementById("dataNascimento").value = pessoa.dataNascimento || "";
+    // Na edição o nascimento é opcional (se vazio, senha original permanece)
+    document.getElementById("dataNascimento").removeAttribute("required");
     window.scrollTo({ top: 0, behavior: "smooth" });
   },
 
@@ -97,7 +125,7 @@ const Cadastro = {
   limparForm() {
     this.editandoId = null;
     document.getElementById("form-cadastro").reset();
-    document.getElementById("senha-cadastro").value = "123456";
+    document.getElementById("dataNascimento").setAttribute("required", "");
   },
 
   _renderizarTabela(pessoas) {
@@ -130,11 +158,11 @@ const Cadastro = {
     container.innerHTML = html;
   },
 
-  _mostrarAlerta(msg, tipo) {
+  _mostrarAlerta(msg, tipo, duracao = 4000) {
     const alerta = document.getElementById("alerta-cadastro");
     alerta.textContent = msg;
     alerta.className = "alerta alerta-" + tipo;
-    setTimeout(() => alerta.classList.add("oculto"), 4000);
+    setTimeout(() => alerta.classList.add("oculto"), duracao);
   }
 };
 

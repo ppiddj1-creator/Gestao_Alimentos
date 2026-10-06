@@ -76,6 +76,10 @@
         <span class="badge badge-suave">obrigatório *</span>
       </div>
 
+      <p style="margin:-4px 0 16px; font-size:13px; color:#6b8299; line-height:1.5;">
+        Matrícula gerada automaticamente ao salvar · A <strong>data de nascimento será a senha</strong> de acesso (formato <strong>ddmmaaaa</strong>, ex.: 15/03/2010 → <strong>15032010</strong>)
+      </p>
+
       <form id="form-cadastro" class="form-grade">
         <div class="campo-fla">
           <span class="campo-icone">
@@ -109,46 +113,25 @@
         <div class="campo-fla">
           <span class="campo-icone">
             <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </span>
+          <input type="date" id="dataNascimento" required placeholder=" ">
+          <label for="dataNascimento">Data de Nascimento (senha)</label>
+        </div>
+
+        <div class="campo-fla">
+          <span class="campo-icone">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="m4 10 8-6 8 6"/>
               <path d="M6 9v11h12V9"/>
             </svg>
           </span>
-          <input type="text" id="turmaSetor" required placeholder=" ">
-          <label for="turmaSetor">Turma / Setor</label>
-        </div>
-
-        <div class="campo-fla">
-          <span class="campo-icone">
-            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <line x1="4" y1="9" x2="20" y2="9"/>
-              <line x1="4" y1="15" x2="20" y2="15"/>
-              <line x1="10" y1="3" x2="8" y2="21"/>
-              <line x1="16" y1="3" x2="14" y2="21"/>
-            </svg>
-          </span>
-          <input type="text" id="matricula" required placeholder=" ">
-          <label for="matricula">Matrícula</label>
-        </div>
-
-        <div class="campo-fla">
-          <span class="campo-icone">
-            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92Z"/>
-            </svg>
-          </span>
-          <input type="text" id="telefone" placeholder=" ">
-          <label for="telefone">Telefone (opcional)</label>
-        </div>
-
-        <div class="campo-fla">
-          <span class="campo-icone">
-            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="3" y="11" width="18" height="11" rx="2"/>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-            </svg>
-          </span>
-          <input type="text" id="senha-cadastro" value="123456" required placeholder=" ">
-          <label for="senha-cadastro">Senha</label>
+          <input type="text" id="turmaSetor" placeholder=" ">
+          <label for="turmaSetor">Turma / Setor (opcional)</label>
         </div>
 
         <div class="form-acoes">
@@ -163,6 +146,40 @@
           <button type="button" class="btn btn-cinza" onclick="Cadastro.limparForm()">Limpar</button>
         </div>
       </form>
+    </div>
+
+    <div class="card">
+      <div class="card-titulo">
+        <span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          Importar Planilha (Excel)
+        </span>
+        <span class="badge badge-suave">em lote</span>
+      </div>
+
+      <p style="margin:-4px 0 14px; font-size:13px; color:#6b8299; line-height:1.5;">
+        Colunas aceitas: <strong>nome</strong>, <strong>categoria</strong> (aluno/professor/funcionario),
+        <strong>dataNascimento</strong> (dd/mm/aaaa) e opcional <strong>turmaSetor</strong>/<strong>matricula</strong>.
+        Matrículas em branco são geradas automaticamente. Aceita .xlsx, .xls e .csv.
+      </p>
+
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:14px;">
+        <input type="file" id="arquivo-excel" accept=".xlsx,.xls,.csv">
+        <button type="button" class="btn btn-azul" onclick="ImportadorExcel.analisarDoInput()">Analisar planilha</button>
+        <button type="button" class="btn btn-cinza" onclick="ImportadorExcel.baixarModelo()">Baixar modelo</button>
+      </div>
+
+      <div id="alerta-importacao" class="alerta oculto"></div>
+      <div id="preview-excel"></div>
+
+      <div id="acao-importar" class="form-acoes" style="display:none; margin-top:14px;">
+        <button type="button" class="btn btn-primario" id="btn-importar-excel" onclick="ImportadorExcel.confirmarImportacao()">Importar</button>
+        <button type="button" class="btn btn-cinza" onclick="ImportadorExcel.limpar()">Limpar análise</button>
+      </div>
     </div>
 
     <div class="card">
@@ -203,8 +220,10 @@
   <script src="js/supabase-config.js"></script>
   <script src="js/database-supabase.js"></script>
   <script src="js/dados-iniciais.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/cadastro.js"></script>
+  <script src="js/excel-import.js"></script>
   <script src="js/ui.js"></script>
 </body>
 </html>
