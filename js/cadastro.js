@@ -14,7 +14,8 @@ const Cadastro = {
       const filtradas = todas.filter(
         (p) =>
           p.nome.toLowerCase().includes(filtro) ||
-          p.matricula.includes(filtro) ||
+          String(p.login || "").toLowerCase().includes(filtro) ||
+          String(p.matricula || "").includes(filtro) ||
           p.categoria.toLowerCase().includes(filtro)
       );
       this._renderizarTabela(filtradas);
@@ -56,15 +57,26 @@ const Cadastro = {
 
     try {
       if (this.editandoId) {
+        const atual = await Database.getDocumento("pessoas", this.editandoId);
+        const loginNovo = this._gerarLogin(nome);
+        if (!atual.login || atual.login !== loginNovo) {
+          dados.login = await this._loginUnico(loginNovo, this.editandoId);
+        }
         await Database.atualizar("pessoas", this.editandoId, dados);
-        this._mostrarAlerta("Pessoa atualizada com sucesso!", "sucesso");
+        const loginFinal = dados.login || (atual && atual.login) || "";
+        this._mostrarAlerta(
+          loginFinal ? "Pessoa atualizada! Login: " + loginFinal : "Pessoa atualizada com sucesso!",
+          "sucesso"
+        );
       } else {
         const matricula = await this._gerarMatricula();
+        const login = await this._loginUnico(this._gerarLogin(nome));
         dados.matricula = matricula;
+        dados.login = login;
         dados.criadoEm = hoje;
         await Database.adicionar("pessoas", dados);
         this._mostrarAlerta(
-          "Pessoa cadastrada! Matrícula: " + matricula + " · Senha: " + dados.senha,
+          "Pessoa cadastrada! Login: " + login + " · Senha: " + dados.senha,
           "sucesso",
           10000
         );
@@ -73,6 +85,29 @@ const Cadastro = {
       this.carregar();
     } catch (erro) {
       this._mostrarAlerta("Erro ao salvar: " + erro.message, "erro");
+    }
+  },
+
+  // Login = 2 primeiros nomes juntos, sem acento e sem espaço (ex.: DavidsonOliveira)
+  _gerarLogin(nome) {
+    const partes = String(nome || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2);
+    return partes.map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join("");
+  },
+
+  // Garante login único (append 2, 3... se já existir); excetoId = ignora a própria pessoa na edição
+  async _loginUnico(base, excetoId) {
+    let login = base || "usuario";
+    let n = 2;
+    for (;;) {
+      const existentes = await Database.buscarPorCampo("pessoas", "login", login);
+      if (!existentes.some((p) => p.id !== excetoId)) return login;
+      login = base + n;
+      n++;
     }
   },
 
@@ -138,13 +173,14 @@ const Cadastro = {
     const catLabel = { aluno: "Aluno(a)", professor: "Professor(a)", funcionario: "Funcionário(a)" };
 
     let html = '<table class="tabela"><thead><tr>';
-    html += '<th>Nome</th><th>Matrícula</th><th>Categoria</th><th>Turma/Setor</th><th>Ações</th>';
+    html += '<th>Nome</th><th>Login</th><th>Matrícula</th><th>Categoria</th><th>Turma/Setor</th><th>Ações</th>';
     html += '</tr></thead><tbody>';
 
     pessoas.forEach((p) => {
       html += "<tr>";
       html += "<td>" + p.nome + "</td>";
-      html += "<td>" + p.matricula + "</td>";
+      html += "<td>" + (p.login || "-") + "</td>";
+      html += "<td>" + (p.matricula || "-") + "</td>";
       html += "<td>" + (catLabel[p.categoria] || p.categoria) + "</td>";
       html += "<td>" + (p.turmaSetor || "-") + "</td>";
       html += '<td><div class="acao-botoes">';

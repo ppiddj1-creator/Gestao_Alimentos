@@ -27,6 +27,7 @@ window.DADOS_INICIAIS_PRONTO = (async () => {
         categoria: "aluno",
         turmaSetor: "3º Ano A",
         matricula: "2026001",
+        login: "MariaSilva",
         senha: "123456",
         telefone: "(11) 99999-0001",
         criadoEm: "2026-08-25"
@@ -37,6 +38,7 @@ window.DADOS_INICIAIS_PRONTO = (async () => {
         categoria: "aluno",
         turmaSetor: "3º Ano A",
         matricula: "2026002",
+        login: "JoaoSantos",
         senha: "123456",
         telefone: "(11) 99999-0002",
         criadoEm: "2026-08-25"
@@ -47,6 +49,7 @@ window.DADOS_INICIAIS_PRONTO = (async () => {
         categoria: "aluno",
         turmaSetor: "3º Ano A",
         matricula: "2026003",
+        login: "AnaOliveira",
         senha: "123456",
         telefone: "(11) 99999-0003",
         criadoEm: "2026-08-25"
@@ -57,6 +60,7 @@ window.DADOS_INICIAIS_PRONTO = (async () => {
         categoria: "aluno",
         turmaSetor: "3º Ano A",
         matricula: "2026004",
+        login: "BeatrizCosta",
         senha: "123456",
         telefone: "(11) 99999-0004",
         criadoEm: "2026-08-25"
@@ -67,6 +71,7 @@ window.DADOS_INICIAIS_PRONTO = (async () => {
         categoria: "professor",
         turmaSetor: "Matemática",
         matricula: "2026005",
+        login: "CarlosSouza",
         senha: "123456",
         telefone: "(11) 99999-0005",
         criadoEm: "2026-08-25"

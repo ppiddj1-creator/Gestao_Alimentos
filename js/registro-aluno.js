@@ -7,10 +7,10 @@ const RegistroAluno = {
 
     if (pessoa) {
       document.getElementById("aluno-nome").textContent = "Olá, " + pessoa.nome + "!";
-      document.getElementById("aluno-matricula").textContent = "Matrícula: " + pessoa.matricula;
+      document.getElementById("aluno-matricula").textContent = "Login: " + (pessoa.login || pessoa.matricula);
     } else {
       document.getElementById("aluno-nome").textContent = "Olá, " + usuario.nome + "!";
-      document.getElementById("aluno-matricula").textContent = "Matrícula: " + usuario.usuario;
+      document.getElementById("aluno-matricula").textContent = "Login: " + usuario.usuario;
     }
 
     const amanha = new Date();

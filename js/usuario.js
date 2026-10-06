@@ -16,7 +16,7 @@ const Usuario = {
     const select = document.getElementById("u-pessoa");
     select.innerHTML = '<option value="">Selecionar pessoa...</option>';
     pessoas.forEach((p) => {
-      select.innerHTML += '<option value="' + p.id + '">' + p.nome + ' (' + p.matricula + ')</option>';
+      select.innerHTML += '<option value="' + p.id + '">' + p.nome + ' (' + (p.login || p.matricula) + ')</option>';
     });
   },
 

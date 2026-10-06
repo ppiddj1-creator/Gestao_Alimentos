@@ -13,13 +13,17 @@ const Auth = {
       return usuarioAdmin;
     }
 
-    const pessoas = await Database.buscarPorCampo("pessoas", "matricula", usuario);
+    // Pessoas: login = 2 primeiros nomes (ex.: DavidsonOliveira); fallback na matrícula
+    let pessoas = await Database.buscarPorCampo("pessoas", "login", usuario);
+    if (pessoas.length === 0) {
+      pessoas = await Database.buscarPorCampo("pessoas", "matricula", usuario);
+    }
     if (pessoas.length > 0) {
       const pessoa = pessoas[0];
       if (pessoa.senha === senha) {
         const pessoaLogada = {
           id: pessoa.id,
-          usuario: pessoa.matricula,
+          usuario: pessoa.login || pessoa.matricula,
           nome: pessoa.nome,
           perfil: pessoa.categoria === "aluno" ? "aluno" : pessoa.categoria
         };

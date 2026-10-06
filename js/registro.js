@@ -23,7 +23,7 @@ const Registro = {
 
     const catLabel = { aluno: "Aluno(a)", professor: "Professor(a)", funcionario: "Funcionário(a)" };
     let html = '<table class="tabela"><thead><tr>';
-    html += '<th>Nome</th><th>Matrícula</th><th>Categoria</th>';
+    html += '<th>Nome</th><th>Login</th><th>Categoria</th>';
     html += '<th>Vai almoçar?</th>';
     html += '</tr></thead><tbody>';
 
@@ -34,7 +34,7 @@ const Registro = {
 
       html += "<tr>";
       html += "<td>" + p.nome + "</td>";
-      html += "<td>" + p.matricula + "</td>";
+      html += "<td>" + (p.login || p.matricula || "-") + "</td>";
       html += "<td>" + (catLabel[p.categoria] || p.categoria) + "</td>";
 
       if (reg.vaiAlmocar === undefined) {

@@ -68,6 +68,7 @@ const ImportadorExcel = {
       categoria,
       turmaSetor,
       matricula,
+      login: Cadastro._gerarLogin(nome),
       dataNascimento,
       senha: dataNascimento ? Cadastro._nascimentoParaSenha(dataNascimento) : "",
       ok: true,
@@ -162,13 +163,14 @@ const ImportadorExcel = {
     html += "</p>";
 
     html += '<table class="tabela"><thead><tr>';
-    html += "<th>Linha</th><th>Nome</th><th>Categoria</th><th>Nascimento</th><th>Turma/Setor</th><th>Matrícula</th><th>Status</th>";
+    html += "<th>Linha</th><th>Nome</th><th>Login</th><th>Categoria</th><th>Nascimento</th><th>Turma/Setor</th><th>Matrícula</th><th>Status</th>";
     html += "</tr></thead><tbody>";
 
     this.linhas.forEach((l) => {
       html += "<tr>";
       html += "<td>" + l.linha + "</td>";
       html += "<td>" + this._escapar(l.nome) + "</td>";
+      html += "<td>" + this._escapar(l.login || "-") + "</td>";
       html += "<td>" + this._escapar(l.categoria) + "</td>";
       html += "<td>" + this._escapar(l.dataNascimento) + "</td>";
       html += "<td>" + this._escapar(l.turmaSetor || "-") + "</td>";
@@ -223,16 +225,20 @@ const ImportadorExcel = {
         }
         usadas.add(matricula);
 
+        const login = await Cadastro._loginUnico(l.login || Cadastro._gerarLogin(l.nome));
+
         await Database.adicionar("pessoas", {
           nome: l.nome,
           categoria: l.categoria,
           turmaSetor: l.turmaSetor,
           matricula,
+          login,
           dataNascimento: l.dataNascimento,
           senha: l.senha,
           criadoEm: hoje
         });
         l.matricula = matricula;
+        l.login = login;
         l.importada = true;
         importadas++;
       } catch (erro) {
