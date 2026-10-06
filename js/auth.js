@@ -28,6 +28,22 @@ const Auth = {
       }
     }
 
+    // Usuários criados pelo Admin (coleção/tabela "usuarios")
+    const usuarios = await Database.buscarPorCampo("usuarios", "usuario", usuario);
+    if (usuarios.length > 0) {
+      const u = usuarios[0];
+      if (u.senha === senha) {
+        const usuarioLogado = {
+          id: u.id,
+          usuario: u.usuario,
+          nome: u.nome,
+          perfil: u.perfil
+        };
+        this.SalvarSessao(usuarioLogado);
+        return usuarioLogado;
+      }
+    }
+
     throw new Error("Usuário ou senha inválidos");
   },
 

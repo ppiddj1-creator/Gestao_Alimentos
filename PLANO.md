@@ -2,7 +2,7 @@
 
 **Projeto Escolar — PPI**
 
-> **Status: EM DESENVOLVIMENTO** — Fases 1 a 4 concluídas (funcionando localmente)
+> **Status: EM DESENVOLVIMENTO** — Fases 1 a 10 e 12 concluídas — sistema 100% online (Supabase)
 
 ---
 
@@ -12,13 +12,13 @@
 
 **Público-alvo:** Equipe administrativa, professores, funcionários e alunos da escola.
 
-**Tecnologias:** HTML, CSS, JavaScript puro | localStorage (atual) → Firebase Firestore (futuro) | GitHub Pages | Chart.js (CDN)
+**Tecnologias:** HTML, CSS, JavaScript puro | Supabase (PostgreSQL online, gratuito) | GitHub Pages | Chart.js (CDN)
 
 ---
 
 ## 2. COMO O SISTEMA FUNCIONA ATUALMENTE
 
-O sistema roda **100% local** no navegador, usando o **localStorage** do próprio navegador como banco de dados. Não precisa criar conta em nenhum serviço para testar.
+O sistema roda **100% online**, usando o **Supabase** (PostgreSQL gratuito na nuvem, região São Paulo) como banco de dados. Os dados ficam disponíveis de qualquer dispositivo para toda a equipe escolar.
 
 **Como funciona na prática:**
 ```
@@ -31,15 +31,15 @@ O sistema roda **100% local** no navegador, usando o **localStorage** do própri
 6. Relatórios mostram tendências e ajudam a reduzir desperdício
 ```
 
-### Armazenamento atual vs. futuro
+### Armazenamento
 
-| | Agora | Futuro (deploy) |
-|---|---|---|
-| **Banco** | localStorage (arquivos `database.js`) | Firebase Firestore (arquivo `database-firebase.js`) |
-| **Servidor** | Nenhum (projeto local) | GitHub Pages |
-| **Conta necessária** | Nenhuma | Firebase + GitHub gratuitos |
+| | Configuração atual |
+|---|---|
+| **Banco** | Supabase PostgreSQL — adapter `database-supabase.js` + config `supabase-config.js` |
+| **Servidor** | GitHub Pages |
+| **Conta necessária** | Supabase (gratuito) + GitHub (gratuito) |
 
-> A troca para o Firebase é simples: substituir `database.js` por `database-firebase.js` e preencher a configuração em `firebase-config.js`.
+> O schema SQL está versionado em `supabase/migrations/0001_init.sql` (5 tabelas + RLS). O antigo `database.js` (localStorage) ficou como referência/fallback, mas nenhum HTML o carrega mais.
 
 ---
 
@@ -177,9 +177,11 @@ Projeto PPI/
 
 ---
 
-## 6. MODELO DE DADOS (localStorage)
+## 6. MODELO DE DADOS (Supabase — tabelas no PostgreSQL)
 
-### Chave: colecao_admin
+> Cada "coleção" do localStorage virou uma **tabela** no Supabase, com os mesmos campos (camelCase idêntico ao JS — zero mapeamento). O schema completo está em `supabase/migrations/0001_init.sql`.
+
+### Tabela: admin
 ```javascript
 {
   id: "admin",
@@ -190,7 +192,7 @@ Projeto PPI/
 }
 ```
 
-### Chave: colecao_pessoas
+### Tabela: pessoas
 ```javascript
 {
   id: "p1",
@@ -204,7 +206,7 @@ Projeto PPI/
 }
 ```
 
-### Chave: colecao_cardapio
+### Tabela: cardapio
 ```javascript
 {
   id: "segunda",             // segunda | terca | quarta | quinta | sexta
@@ -213,7 +215,7 @@ Projeto PPI/
 }
 ```
 
-### Chave: colecao_registros
+### Tabela: registros
 ```javascript
 {
   id: "r1",
@@ -225,7 +227,7 @@ Projeto PPI/
 }
 ```
 
-### Chave: colecao_usuarios (criados pelo Admin)
+### Tabela: usuarios (criados pelo Admin)
 ```javascript
 {
   id: "auto-gerado",
@@ -238,9 +240,9 @@ Projeto PPI/
 }
 ```
 
-### Chave: dadosInicializados
-- Guarda a **versão** dos dados de teste (ex: `"v2-almoco"`)
-- Se a versão mudar, o sistema recarrega os dados de teste automaticamente
+### Seed (dados iniciais) — `js/dados-iniciais.js`
+- Grava os dados de teste **apenas se a tabela `admin` estiver vazia** (idempotente, seguro com abas simultâneas)
+- **Nunca apaga** registros ou usuários existentes (o antigo controle de versão `dadosInicializados` do localStorage foi removido)
 
 ---
 
@@ -386,29 +388,30 @@ Projeto PPI/
 | **9** | Dashboard (resumo + cardápio do dia) | ✅ Concluída |
 | **10** | Relatórios + Gráficos (Chart.js) | ✅ Concluída |
 | **11** | Estilização completa + responsividade mobile | 🔄 Em andamento |
-| **12** | Configurar Firebase real + Deploy no GitHub Pages | ⏳ Pendente |
+| **12** | Configurar banco online (Supabase) + Deploy no GitHub Pages | ✅ Concluída |
 | **13** | Testes finais com a turma + ajustes | ⏳ Pendente |
 
 ---
 
-## 10. PREPARAÇÃO PARA DEPLOY (FUTURO)
+## 10. DEPLOY E BANCO DE DADOS (CONCLUÍDO)
 
-Para colocar o sistema online, será necessário:
+O sistema está **100% online**:
 
 ```
-1. Criar conta no GitHub (gratuito)
-2. Criar um repositório: "gestao-alimentar-escolar"
-3. Criar conta no Firebase (gratuito)
-4. Criar um projeto no Firebase Console
-5. Ativar o Firestore Database
-6. Copiar as configurações do Firebase para o firebase-config.js
-7. Trocar database.js por database-firebase.js (a API é a mesma!)
-8. Enviar os arquivos para o GitHub (git push)
-9. Ativar GitHub Pages nas configurações do repositório
-10. Acessar o site em: https://seu-usuario.github.io/gestao-alimentar-escolar/
+1. Conta Supabase (gratuita) → projeto gbeuvgsipxyodqyzsbdc (região São Paulo sa-east-1)
+2. Schema aplicado: supabase/migrations/0001_init.sql (5 tabelas + RLS + grants)
+3. Configuração em js/supabase-config.js (URL + chave publishable)
+4. Adapter em js/database-supabase.js (API idêntica ao antigo database.js)
+5. Seed idempotente em js/dados-iniciais.js (só grava se "admin" estiver vazio)
+6. Repositório GitHub: ppiddj1-creator/Gestao_Alimentos
+7. GitHub Pages publicando a raiz do repositório
+8. Workflow .github/workflows/keep-alive.yml pinga a API a cada 5 dias
+   (evita a pausa automática por 1 semana de inatividade do plano gratuito)
 ```
 
-> **Dica:** A API do `database.js` (localStorage) é **idêntica** à do `database-firebase.js` (Firestore). A troca não exige alterar nenhum outro arquivo.
+> **Segurança (aceito para demo acadêmica):** RLS habilitado com política aberta para a chave anon (pública por design); senhas em texto puro. Para produção real: Firebase Auth/Supabase Auth + políticas por usuário.
+
+> **Limite gratuito do Supabase:** 500 MB de banco, 5 GB de egress/mês, 2 projetos ativos — folga de sobra para a escola.
 
 ---
 

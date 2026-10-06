@@ -1,0 +1,10 @@
+# Segredos locais — nunca commitar
+Senha_PPI.txt
+*.password
+
+# Dependências
+node_modules/
+
+# Editor/OS
+.DS_Store
+Thumbs.db

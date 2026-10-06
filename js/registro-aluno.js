@@ -44,8 +44,8 @@ const RegistroAluno = {
     amanha.setDate(amanha.getDate() + 1);
     const data = amanha.toISOString().split("T")[0];
 
-    const registros = await Database.getColecao("registros");
-    const existente = registros.find((r) => r.data === data && r.pessoaId === usuario.id);
+    const registros = await Database.buscarPorCampo("registros", "data", data);
+    const existente = registros.find((r) => r.pessoaId === usuario.id);
 
     const dados = {
       data,
@@ -67,8 +67,8 @@ const RegistroAluno = {
 
   async _verificarRegistro(usuarioId, data) {
     const dataStr = data.toISOString().split("T")[0];
-    const registros = await Database.getColecao("registros");
-    const registro = registros.find((r) => r.data === dataStr && r.pessoaId === usuarioId);
+    const registros = await Database.buscarPorCampo("registros", "data", dataStr);
+    const registro = registros.find((r) => r.pessoaId === usuarioId);
 
     if (registro) {
       this._atualizarStatus(registro.vaiAlmocar);

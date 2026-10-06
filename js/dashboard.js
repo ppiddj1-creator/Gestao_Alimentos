@@ -3,15 +3,13 @@
 const Dashboard = {
   async carregar() {
     try {
-      const pessoas = await Database.getColecao("pessoas");
-      const registros = await Database.getColecao("registros");
-      const cardapio = await Database.getColecao("cardapio");
-
       const amanha = this._obterDataAmanha();
 
-      const respondidos = registros.filter(
-        (r) => r.data === amanha && r.vaiAlmocar !== undefined
-      );
+      const pessoas = await Database.getColecao("pessoas");
+      const registros = await Database.buscarPorCampo("registros", "data", amanha);
+      const cardapio = await Database.getColecao("cardapio");
+
+      const respondidos = registros.filter((r) => r.vaiAlmocar !== undefined);
 
       const totalVai = respondidos.filter((r) => r.vaiAlmocar === true).length;
       const totalNao = respondidos.filter((r) => r.vaiAlmocar === false).length;
@@ -32,7 +30,7 @@ const Dashboard = {
         '<p style="font-size:15px; margin-bottom:6px;"><strong>Funcionários:</strong> ' + porCategoria.funcionario + '</p>' +
         '<p style="font-size:15px; margin-top:10px; padding-top:8px; border-top:1px solid #eee;"><strong>Total:</strong> ' + pessoas.length + '</p>';
 
-      const diaSemana = this._obterDiaSemana(hoje);
+      const diaSemana = this._obterDiaSemana(new Date());
       const cardapioHoje = cardapio.find((c) => c.id === diaSemana);
       if (cardapioHoje && cardapioHoje.prato) {
         document.getElementById("cardapio-hoje").innerHTML =

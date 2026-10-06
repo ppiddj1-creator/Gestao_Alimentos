@@ -1,0 +1,20 @@
+name: Keep Supabase alive
+
+# Evita que o projeto gratuito do Supabase seja pausado por 1 semana de inatividade.
+# A chave é a "publishable key" (pública por design, igual à enviada ao navegador).
+
+on:
+  schedule:
+    - cron: "0 4 */5 * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping REST API
+        run: >
+          curl -fsS
+          "https://gbeuvgsipxyodqyzsbdc.supabase.co/rest/v1/admin?select=id&limit=1"
+          -H "apikey: sb_publishable_7uVk1fV98v7g_1u19XCA8g_lAwE125C"
+          -H "Authorization: Bearer sb_publishable_7uVk1fV98v7g_1u19XCA8g_lAwE125C"

@@ -9,8 +9,7 @@ const Registro = {
     }
 
     const pessoas = await Database.getColecao("pessoas");
-    const registros = await Database.getColecao("registros");
-    const registrosDia = registros.filter((r) => r.data === data);
+    const registrosDia = await Database.buscarPorCampo("registros", "data", data);
 
     const registroMap = {};
     registrosDia.forEach((r) => {
@@ -77,12 +76,12 @@ const Registro = {
       return;
     }
 
-    const registros = await Database.getColecao("registros");
+    const registros = await Database.buscarPorCampo("registros", "data", data);
     const pessoas = await Database.getColecao("pessoas");
 
     for (const pessoa of pessoas) {
       const pessoaId = pessoa.id;
-      const existente = registros.find((r) => r.data === data && r.pessoaId === pessoaId);
+      const existente = registros.find((r) => r.pessoaId === pessoaId);
 
       const checkbox = document.querySelector('.chk-sim[data-id="' + pessoaId + '"]');
       const radio = document.querySelector('.rdo-almoco[data-id="' + pessoaId + '"]:checked');
