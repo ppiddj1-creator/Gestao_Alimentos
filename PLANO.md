@@ -2,7 +2,7 @@
 
 **Projeto Escolar — PPI**
 
-> **Status: EM DESENVOLVIMENTO** — Fases 1 a 10 e 12 concluídas — sistema 100% online (Supabase)
+> **Status: EM DESENVOLVIMENTO** — Fases 1 a 12 concluídas — sistema 100% online (Supabase), controle de acesso por perfil e prazo de resposta aplicados — falta apenas a Fase 13 (testes com a turma)
 
 ---
 
@@ -62,29 +62,35 @@ O sistema roda **100% online**, usando o **Supabase** (PostgreSQL gratuito na nu
 
 ### Login
 
-- Todos os perfis entram com **matrícula/usuário + senha**
+- Todos os perfis entram com **login + senha**
 - Admin tem login fixo: `admin` / `admin`
-- Cada pessoa cadastrada recebe uma **matrícula única numérica**
+- Alunos/Professores/Funcionários entram com o **login gerado automaticamente** = 2 primeiros nomes juntos sem acento (ex.: `MariaSilva`) — a matrícula também funciona como login alternativo
+- A **senha** de cada pessoa é a própria **data de nascimento** (só números, formato `ddmmaaaa`)
 
 ### Contas de teste pré-cadastradas
 
-| Usuário | Senha | Perfil | Nome |
+| Login | Senha | Perfil | Nome |
 |---------|-------|--------|------|
 | `admin` | `admin` | Admin | Administrador |
-| `2026001` | `123456` | Aluno | Maria Silva |
-| `2026002` | `123456` | Aluno | João Santos |
-| `2026003` | `123456` | Aluno | Ana Oliveira |
-| `2026004` | `123456` | Aluno | Beatriz Costa |
-| `2026005` | `123456` | Professor | Carlos Souza |
+| `MariaSilva` | `123456` | Aluno | Maria Silva |
+| `JoaoSantos` | `123456` | Aluno | João Santos |
+| `AnaOliveira` | `123456` | Aluno | Ana Oliveira |
+| `BeatrizCosta` | `123456` | Aluno | Beatriz Costa |
+| `CarlosSouza` | `123456` | Professor | Carlos Souza |
+
+> Obs.: nas contas de teste a senha é `123456`; nas contas reais a senha é a **data de nascimento** informada no cadastro.
 
 ---
 
 ## 4. FUNCIONALIDADES POR MÓDULO (ESTADO ATUAL)
 
 ### MÓDULO 1 — Autenticação (Login) ✅
-- Tela de **login** (matrícula/usuário + senha)
+- Tela de **login** (login + senha)
 - Redirecionamento por perfil (Aluno → tela do aluno; demais → dashboard)
-- Controle de acesso: cada tela verifica o perfil do usuário logado
+- Controle de acesso real por página (`Auth.verificarAcesso`):
+  - **Cadastros e Usuários** → somente Admin
+  - **Dashboard, Registro, Cardápio e Relatórios** → Admin, Professor e Funcionário (aluno é redirecionado)
+  - **Tela do aluno** → somente Aluno
 - Botão de **sair/logout**
 - Sessão persistente (não precisa logar toda vez que abre a página)
 
@@ -106,17 +112,17 @@ O sistema roda **100% online**, usando o **Supabase** (PostgreSQL gratuito na nu
   - **"SIM, vou almoçar"** (verde)
   - **"NÃO vou almoçar"** (vermelho)
 - Mostra o **prato do almoço de amanhã** (cardápio cadastrado)
-- Prazo: até **23h59 do dia anterior**
+- Prazo: até **23h59 do dia anterior** — **aplicado pelo sistema**: após o prazo os botões são desabilitados e novas respostas são recusadas
 - Confirmação visual de que a opção foi registrada
 - Possibilidade de **alterar a opção** antes do prazo
 
 #### Para Professores/Admin (tela de registro): ✅
 - Seletor de **data** (padrão: dia seguinte)
 - Lista de **todas as pessoas** com resposta SIM/NÃO
-- Alunos sem registro: checkbox "SIM" (simples)
+- Alunos sem registro: checkbox "SIM" (simples) — **desmarcado = continua pendente** (não vira NÃO)
 - Já registrados: botões de rádio SIM/NÃO
 - Marcar/desmarcar todos de uma vez
-- Botão **Salvar Registro**
+- **Salvamento automático** (com debounce) ao alterar qualquer linha + botão **Salvar Registro**
 - Resumo: total de pessoas que vão almoçar
 
 ### MÓDULO 4 — Cardápio do Almoço (semanal) ✅
@@ -131,15 +137,17 @@ O sistema roda **100% online**, usando o **Supabase** (PostgreSQL gratuito na nu
   - **Vão almoçar** (responderam SIM)
   - **Não vão almoçar** (responderam NÃO)
   - **Ainda não responderam** (pendentes)
-- Cardápio de amanhã (prato do dia)
+- Cardápio de **amanhã** (prato do dia seguinte, destacado)
 - Cards com total por categoria (Alunos / Professores / Funcionários)
 - Acesso rápido para todas as funcionalidades
 
 ### MÓDULO 6 — Relatórios ✅
-- **Gráfico de barras** (Chart.js): últimas 7 dias — SIM vs NÃO
-- Taxa de aproveitamento: média diária de quem almoça, % da capacidade
-- Histórico de registros por data (SIM/NÃO)
-- Filtro por período (data inicial e final)
+- **Gráfico de barras** (Chart.js): SIM vs NÃO por dia (últimos 7 dias ou período filtrado)
+- **Gráfico de pizza**: distribuição por categoria (Alunos / Professores / Funcionários)
+- Taxa de aproveitamento: média diária, % da capacidade e **% de pendentes**
+- Histórico de registros por data com barra de proporção (SIM vs NÃO)
+- **Filtro único** (período + turma/setor + categoria) que vale para gráfico, aproveitamento e histórico
+- Botão "Limpar filtros" e "Exportar PDF" (impressão)
 
 ---
 
@@ -150,7 +158,7 @@ Projeto PPI/
 │
 ├── index.html              ← Login
 ├── dashboard.html          ← Painel principal (resultado do almoço)
-├── cadastro.html           ← Cadastro de pessoas
+├── cadastro.html           ← Cadastro de pessoas (+ importação Excel)
 ├── registro.html           ← Registro diário (Admin/Professor)
 ├── registro-aluno.html     ← Tela simplificada do aluno (SIM/NÃO)
 ├── cardapio.html           ← Cardápio semanal (só o prato do almoço)
@@ -158,21 +166,33 @@ Projeto PPI/
 ├── usuario.html            ← Gerenciar usuários (Admin)
 │
 ├── css/
-│   └── style.css           ← Estilos gerais (responsivo)
+│   ├── style.css           ← Estilos gerais (responsivo, impressão)
+│   └── login.css           ← Estilos da tela de login
+│
+├── supabase/
+│   └── migrations/         ← Schema SQL (0001_init, 0002 nascimento, 0003 login)
+│
+├── .github/workflows/
+│   └── keep-alive.yml      ← Ping no Supabase a cada 5 dias
 │
 └── js/
-    ├── dados-iniciais.js   ← Popula o localStorage com dados de teste
-    ├── database.js         ← Banco LOCAL (localStorage) — uso atual
-    ├── database-firebase.js← Banco Firestore — para o deploy futuro
-    ├── firebase-config.js  ← Configuração do Firebase (placeholder)
-    ├── auth.js             ← Login, sessão, controle de perfil
+    ├── supabase-config.js  ← URL + chave pública do Supabase
+    ├── database-supabase.js← Adapter do banco (API igual ao antigo database.js)
+    ├── database.js         ← Banco LOCAL (localStorage) — só referência/fallback
+    ├── dados-iniciais.js   ← Seed idempotente (só grava se "admin" estiver vazio)
+    ├── auth.js             ← Login, sessão, controle de perfil e acesso
+    ├── login.js            ← Tela de login
     ├── cadastro.js         ← Lógica cadastro de pessoas
-    ├── registro.js         ← Lógica registro (Admin/Professor)
-    ├── registro-aluno.js   ← Lógica registro simplificado do aluno
-    ├── cardapio.js         ← Lógica cardápio (só almoço)
-    ├── dashboard.js        ← Lógica painel
-    ├── relatorio.js        ← Gráficos + relatórios
-    └── usuario.js          ← Gerenciar usuários
+    ├── excel-import.js     ← Importação em lote via planilha (SheetJS)
+    ├── registro.js         ← Registro (Admin/Professor)
+    ├── registro-ui.js      ← Salvamento automático do registro (debounce)
+    ├── registro-aluno.js   ← Registro simplificado do aluno (SIM/NÃO + prazo)
+    ├── cardapio.js         ← Cardápio (só almoço)
+    ├── dashboard.js        ← Painel (totais + cardápio de amanhã)
+    ├── painel.js           ← Gráfico de frequência do dashboard
+    ├── relatorio.js        ← Gráficos + relatórios (filtro único)
+    ├── relatorio-extra.js  ← Pizza por categoria + histórico detalhado
+    └── ui.js               ← Toasts, avatares, menu, validação de formulários
 ```
 
 ---
@@ -387,7 +407,7 @@ Projeto PPI/
 | **8** | Confirmação do aluno — tela SIM/NÃO para celular | ✅ Concluída |
 | **9** | Dashboard (resumo + cardápio do dia) | ✅ Concluída |
 | **10** | Relatórios + Gráficos (Chart.js) | ✅ Concluída |
-| **11** | Estilização completa + responsividade mobile | 🔄 Em andamento |
+| **11** | Estilização completa + responsividade mobile | ✅ Concluída |
 | **12** | Configurar banco online (Supabase) + Deploy no GitHub Pages | ✅ Concluída |
 | **13** | Testes finais com a turma + ajustes | ⏳ Pendente |
 
@@ -425,7 +445,7 @@ O sistema está **100% online**:
 | RF04 | Buscar pessoa por nome, matrícula ou categoria | Admin/Professor | ✅ |
 | RF05 | Aluno responde SIM/NÃO se vai almoçar no dia seguinte | Aluno | ✅ |
 | RF06 | Professor/Admin registra resposta de qualquer pessoa | Professor/Admin | ✅ |
-| RF07 | Prazo: resposta do aluno até 23h59 do dia anterior | Aluno | ✅ |
+| RF07 | Prazo: resposta do aluno até 23h59 do dia anterior (bloqueio real após o prazo) | Aluno | ✅ |
 | RF08 | Aluno pode alterar a opção antes do prazo | Aluno | ✅ |
 | RF09 | Exibir no dashboard quem respondeu SIM, NÃO e pendentes | Dashboard | ✅ |
 | RF10 | Visualizar registros de datas anteriores | Admin/Professor | ✅ |
@@ -436,7 +456,7 @@ O sistema está **100% online**:
 | RF15 | Gráfico de barras: últimos 7 dias (SIM vs NÃO) | Admin/Professor | ✅ |
 | RF16 | Calcular taxa de aproveitamento | Admin/Professor | ✅ |
 | RF17 | Cadastrar novos usuários (apenas Admin) | Admin | ✅ |
-| RF18 | Controle de acesso por perfil (Admin/Professor/Aluno) | Sistema | ✅ |
+| RF18 | Controle de acesso por perfil aplicado em todas as páginas | Sistema | ✅ |
 
 ---
 
@@ -446,14 +466,14 @@ O sistema está **100% online**:
 |----|-----------|-----------|
 | RNF01 | **Usabilidade** | Interface simples e intuitiva, fácil para qualquer perfil de usuário |
 | RNF02 | **Responsividade** | Funcionar perfeitamente em computadores, tablets e celulares |
-| RNF03 | **Armazenamento** | Hoje: localStorage. Futuro: Firebase Firestore (nuvem) |
+| RNF03 | **Armazenamento** | Supabase (PostgreSQL na nuvem, região São Paulo) |
 | RNF04 | **Performance** | Resposta rápida, carregamento leve |
-| RNF05 | **Segurança básica** | Senhas protegidas, controle de acesso por perfil |
+| RNF05 | **Segurança básica** | Controle de acesso por perfil + RLS no banco (senhas em texto puro, aceito para demo acadêmica) |
 | RNF06 | **Manutenibilidade** | Código modular, separado por funções, fácil de alterar |
 | RNF07 | **Acessibilidade** | Textos legíveis, contraste adequado, navegação por teclado |
-| RNF08 | **Portabilidade** | Funciona em qualquer navegador moderno (via Live Server) |
-| RNF09 | **Disponibilidade** | Futuro: acessível de qualquer lugar com internet (GitHub Pages) |
-| RNF10 | **Gratuidade** | Hospedagem e banco de dados gratuitos (local hoje; nuvem no futuro) |
+| RNF08 | **Portabilidade** | Funciona em qualquer navegador moderno |
+| RNF09 | **Disponibilidade** | Acessível de qualquer lugar com internet (GitHub Pages + keep-alive do Supabase) |
+| RNF10 | **Gratuidade** | Hospedagem (GitHub Pages) e banco (Supabase) gratuitos |
 | RNF11 | **Escalabilidade** | Suporta escolas com até 500 pessoas cadastradas |
 | RNF12 | **Documentação** | Código organizado para fins didáticos |
 
@@ -468,16 +488,21 @@ O sistema está **100% online**:
 4. O navegador abre em `http://127.0.0.1:5500`
 
 ### Sem Live Server
-- Abrir o `index.html` diretamente no navegador (duplo clique)
-- ⚠️ Cuidado: o `localStorage` pode não funcionar em alguns navegadores quando aberto direto do disco
+- Pode abrir o `index.html` direto no navegador (duplo clique)
+- ⚠️ É necessário internet: os dados ficam no Supabase (a sessão usa o `localStorage` do navegador)
 
 ### Testar o sistema
-- Login: `admin` / `admin`
-- Ou entrar como aluno: `2026001` / `123456`
+- Login admin: `admin` / `admin`
+- Login aluno: `MariaSilva` / `123456` (ou a matrícula `2026001`)
 
-### Limpar dados de teste
-- Abrir as DevTools (F12) → Console → digitar `localStorage.clear()` → F5
+### Onde testar
+- **Local:** abra o `index.html` com o Live Server (os dados vão para o Supabase, então funciona igual online)
+- **Online:** GitHub Pages — `ppiddj1-creator/Gestao_Alimentos`
+
+### Dados de teste
+- O seed (`js/dados-iniciais.js`) só grava se a tabela `admin` estiver vazia — nunca apaga dados já existentes
+- Para recomeçar do zero: apagar as tabelas no painel do Supabase (SQL Editor) e recarregar a página
 
 ---
 
-*Documento atualizado em 08/09/2026 — reflete o estado atual do projeto (sistema de almoço simplificado com resposta SIM/NÃO, funcionando 100% local com localStorage)*
+*Documento atualizado em 13/10/2026 — reflete o estado atual do projeto (sistema 100% online com Supabase, controle de acesso por perfil e prazo de resposta aplicados; pendente apenas a Fase 13 — testes com a turma)*

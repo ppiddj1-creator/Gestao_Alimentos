@@ -63,5 +63,51 @@ const Database = {
 
   _gerarId() {
     return Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
+  },
+
+  // Converte erros do Supabase/rede em mensagem entendível
+  erroAmigavel(erro) {
+    const msg = String((erro && erro.message) || erro || "").toLowerCase();
+    if (
+      msg.includes("failed to fetch") ||
+      msg.includes("networkerror") ||
+      msg.includes("load failed") ||
+      msg.includes("non-existent domain") ||
+      msg.includes("getaddrinfo") ||
+      msg.includes("dns")
+    ) {
+      return "Sem conexão com o banco de dados. Verifique sua internet e se o projeto do Supabase ainda está ativo.";
+    }
+    if (msg.includes("invalid api key") || msg.includes("401") || msg.includes("unauthorized")) {
+      return "Chave de acesso inválida. Confira js/supabase-config.js.";
+    }
+    if (msg.includes("404") || msg.includes("not found")) {
+      return "Tabela não encontrada. Rode as migrations em supabase/migrations no SQL Editor do Supabase.";
+    }
+    return "Erro: " + ((erro && erro.message) || erro);
+  },
+
+  // Mostra o erro na página (no alerta existente ou em um aviso no topo)
+  mostrarErro(erro) {
+    const texto = this.erroAmigavel(erro);
+    console.error("[Supabase]", erro);
+
+    const alerta = document.querySelector(".alerta:not(.oculto)") || document.querySelector("[id^='alerta-']");
+    if (alerta && alerta.id) {
+      alerta.textContent = texto;
+      alerta.className = "alerta alerta-erro";
+      alerta.classList.remove("oculto");
+    }
+
+    let aviso = document.getElementById("aviso-banco");
+    if (!aviso) {
+      aviso = document.createElement("div");
+      aviso.id = "aviso-banco";
+      aviso.className = "alerta alerta-erro";
+      aviso.setAttribute("role", "alert");
+      const main = document.querySelector("main") || document.body;
+      main.prepend(aviso);
+    }
+    aviso.textContent = texto;
   }
 };

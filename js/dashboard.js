@@ -30,11 +30,11 @@ const Dashboard = {
         '<p style="font-size:15px; margin-bottom:6px;"><strong>Funcionários:</strong> ' + porCategoria.funcionario + '</p>' +
         '<p style="font-size:15px; margin-top:10px; padding-top:8px; border-top:1px solid #eee;"><strong>Total:</strong> ' + pessoas.length + '</p>';
 
-      const diaSemana = this._obterDiaSemana(new Date());
-      const cardapioHoje = cardapio.find((c) => c.id === diaSemana);
-      if (cardapioHoje && cardapioHoje.prato) {
+      const diaSemana = this._obterDiaSemana(amanha);
+      const cardapioAmanha = cardapio.find((c) => c.id === diaSemana);
+      if (cardapioAmanha && cardapioAmanha.prato) {
         document.getElementById("cardapio-hoje").innerHTML =
-          '<div class="refeicao-item" style="font-size:15px;">🍽️ <strong>' + cardapioHoje.prato + '</strong></div>';
+          '<div class="refeicao-item" style="font-size:15px;">🍽️ <strong>' + cardapioAmanha.prato + '</strong></div>';
       } else {
         document.getElementById("cardapio-hoje").innerHTML = '<p style="color:#999;">Cardápio de amanhã ainda não definido.</p>';
       }
@@ -56,11 +56,8 @@ const Dashboard = {
 };
 
 (function () {
+  if (!Auth.verificarAcesso(Auth.EQUIPE)) return;
   const usuario = Auth.getUsuarioLogado();
-  if (!usuario) {
-    window.location.href = "index.html";
-    return;
-  }
 
   document.getElementById("usuario-nome").textContent = usuario.nome;
 

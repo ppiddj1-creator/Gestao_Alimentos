@@ -55,10 +55,6 @@ const Registro = {
     document.getElementById("lista-pessoas-registro").innerHTML = html;
     document.getElementById("card-lista").style.display = "block";
 
-    document.getElementById("lista-pessoas-registro").addEventListener("change", () => {
-      this._atualizarResumo();
-    });
-
     this._atualizarResumo();
   },
 
@@ -86,31 +82,42 @@ const Registro = {
       const checkbox = document.querySelector('.chk-sim[data-id="' + pessoaId + '"]');
       const radio = document.querySelector('.rdo-almoco[data-id="' + pessoaId + '"]:checked');
 
-      let vaiAlmocar = null;
       if (checkbox) {
-        vaiAlmocar = checkbox.checked;
-      } else if (radio) {
-        vaiAlmocar = radio.value === "sim";
+        // Sem registro ainda: checkbox marcado = SIM; desmarcado = continua PENDENTE
+        if (checkbox.checked) {
+          if (existente) {
+            await Database.atualizar("registros", existente.id, { vaiAlmocar: true });
+          } else {
+            await this._criarRegistro(data, pessoaId, true);
+          }
+        } else if (existente) {
+          await Database.excluir("registros", existente.id);
+        }
+        continue;
       }
 
-      if (vaiAlmocar === null) continue;
-
-      if (existente) {
-        existente.vaiAlmocar = vaiAlmocar;
-        await Database.atualizar("registros", existente.id, { vaiAlmocar });
-      } else {
-        await Database.adicionar("registros", {
-          data,
-          pessoaId,
-          vaiAlmocar,
-          registradoPor: Auth.getUsuarioLogado().id,
-          registradoEm: new Date().toISOString()
-        });
+      if (radio) {
+        const vaiAlmocar = radio.value === "sim";
+        if (existente) {
+          await Database.atualizar("registros", existente.id, { vaiAlmocar });
+        } else {
+          await this._criarRegistro(data, pessoaId, vaiAlmocar);
+        }
       }
     }
 
     this._mostrarAlerta("Registro salvo com sucesso!", "sucesso");
     await this.carregarPessoas();
+  },
+
+  async _criarRegistro(data, pessoaId, vaiAlmocar) {
+    await Database.adicionar("registros", {
+      data,
+      pessoaId,
+      vaiAlmocar,
+      registradoPor: Auth.getUsuarioLogado().id,
+      registradoEm: new Date().toISOString()
+    });
   },
 
   _atualizarResumo() {
@@ -127,11 +134,8 @@ const Registro = {
 };
 
 (function () {
+  if (!Auth.verificarAcesso(Auth.EQUIPE)) return;
   const usuario = Auth.getUsuarioLogado();
-  if (!usuario) {
-    window.location.href = "index.html";
-    return;
-  }
 
   document.getElementById("usuario-nome").textContent = usuario.nome;
 
@@ -140,4 +144,9 @@ const Registro = {
   document.getElementById("data-registro").value = amanha.toISOString().split("T")[0];
 
   document.getElementById("marcar-todos").addEventListener("change", (e) => Registro.marcarTodos(e.target.checked));
+
+  // Listener único (não acumula a cada recarga da lista) — atualiza o resumo
+  document.getElementById("lista-pessoas-registro").addEventListener("change", () => {
+    Registro._atualizarResumo();
+  });
 })();

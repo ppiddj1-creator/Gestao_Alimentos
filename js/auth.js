@@ -1,6 +1,9 @@
 const Auth = {
   USuarioLogado: null,
 
+  // Perfis que podem ver o painel/registro/relatórios/cardápio (equipe da escola)
+  EQUIPE: ["professor", "funcionario"],
+
   async login(usuario, senha) {
     if (usuario === "admin" && senha === "admin") {
       const usuarioAdmin = {
@@ -14,9 +17,15 @@ const Auth = {
     }
 
     // Pessoas: login = 2 primeiros nomes (ex.: DavidsonOliveira); fallback na matrícula
-    let pessoas = await Database.buscarPorCampo("pessoas", "login", usuario);
-    if (pessoas.length === 0) {
-      pessoas = await Database.buscarPorCampo("pessoas", "matricula", usuario);
+    let pessoas, usuarios;
+    try {
+      pessoas = await Database.buscarPorCampo("pessoas", "login", usuario);
+      if (pessoas.length === 0) {
+        pessoas = await Database.buscarPorCampo("pessoas", "matricula", usuario);
+      }
+    } catch (erro) {
+      // Erro de rede/banco: não dá para afirmar que a senha está errada
+      throw new Error(Database.erroAmigavel(erro));
     }
     if (pessoas.length > 0) {
       const pessoa = pessoas[0];
@@ -33,7 +42,11 @@ const Auth = {
     }
 
     // Usuários criados pelo Admin (coleção/tabela "usuarios")
-    const usuarios = await Database.buscarPorCampo("usuarios", "usuario", usuario);
+    try {
+      usuarios = await Database.buscarPorCampo("usuarios", "usuario", usuario);
+    } catch (erro) {
+      throw new Error(Database.erroAmigavel(erro));
+    }
     if (usuarios.length > 0) {
       const u = usuarios[0];
       if (u.senha === senha) {

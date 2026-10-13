@@ -1588,6 +1588,15 @@ a {
   box-shadow: 0 8px 20px rgba(229, 72, 77, 0.18);
 }
 
+.opcao-btn.desabilitado,
+.opcao-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  pointer-events: none;
+}
+
 .status-msg {
   margin-top: 4px;
   padding: 12px;

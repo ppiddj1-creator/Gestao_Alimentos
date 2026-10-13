@@ -39,6 +39,12 @@ const RegistroAluno = {
   },
 
   async registrar(opcao) {
+    if (this._prazoEncerrado()) {
+      this._bloquearBotoes();
+      this._mostrarAlerta("O prazo para responder já encerrou (23h59 de hoje).", "erro");
+      return;
+    }
+
     const usuario = Auth.getUsuarioLogado();
     const amanha = new Date();
     amanha.setDate(amanha.getDate() + 1);
@@ -77,12 +83,33 @@ const RegistroAluno = {
       document.getElementById("status-registro").className = "status-msg pendente";
     }
 
-    const agora = new Date();
-    const prazo = new Date(data);
-    prazo.setHours(23, 59, 0, 0);
+    const prazo = this._dataPrazo();
+    const horasRestantes = Math.max(0, Math.floor((prazo - new Date()) / (1000 * 60 * 60)));
 
-    const horasRestantes = Math.max(0, Math.floor((prazo - agora) / (1000 * 60 * 60)));
-    document.getElementById("prazo-info").textContent = "Prazo: até 23h59 de hoje. Faltam " + horasRestantes + " horas.";
+    if (this._prazoEncerrado()) {
+      document.getElementById("prazo-info").textContent = "Prazo encerrado: respostas até 23h59 de hoje.";
+      this._bloquearBotoes();
+    } else {
+      document.getElementById("prazo-info").textContent = "Prazo: até 23h59 de hoje. Faltam " + horasRestantes + " horas.";
+    }
+  },
+
+  // Prazo = hoje às 23h59:59 (resposta para o almoço de amanhã)
+  _dataPrazo() {
+    const prazo = new Date();
+    prazo.setHours(23, 59, 59, 999);
+    return prazo;
+  },
+
+  _prazoEncerrado() {
+    return new Date() > this._dataPrazo();
+  },
+
+  _bloquearBotoes() {
+    document.querySelectorAll(".opcao-btn").forEach((btn) => {
+      btn.disabled = true;
+      btn.classList.add("desabilitado");
+    });
   },
 
   _atualizarStatus(opcao) {
@@ -114,7 +141,7 @@ const RegistroAluno = {
 (function () {
   const usuario = Auth.getUsuarioLogado();
   if (!usuario || usuario.perfil !== "aluno") {
-    window.location.href = "index.html";
+    window.location.href = Auth.redirecionarParaPerfil();
     return;
   }
 

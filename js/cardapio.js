@@ -89,11 +89,8 @@ const Cardapio = {
 };
 
 (function () {
+  if (!Auth.verificarAcesso(Auth.EQUIPE)) return;
   const usuario = Auth.getUsuarioLogado();
-  if (!usuario) {
-    window.location.href = "index.html";
-    return;
-  }
 
   document.getElementById("usuario-nome").textContent = usuario.nome;
   Cardapio.carregar();

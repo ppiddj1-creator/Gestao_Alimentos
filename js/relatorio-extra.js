@@ -57,29 +57,9 @@ const RelatorioExtra = {
     });
   },
 
-  async filtrar() {
-    const inicio = document.getElementById("filtro-inicio").value;
-    const fim = document.getElementById("filtro-fim").value;
-    const turma = document.getElementById("filtro-turma").value;
-    const categoria = document.getElementById("filtro-categoria").value;
-
-    const pessoas = await Database.getColecao("pessoas");
-    const pessoasMap = {};
-    pessoas.forEach((p) => {
-      pessoasMap[p.id] = p;
-    });
-
-    let registros = await Database.getColecao("registros");
-    registros = registros.filter((r) => {
-      if (inicio && r.data < inicio) return false;
-      if (fim && r.data > fim) return false;
-      const pessoa = pessoasMap[r.pessoaId];
-      if (turma && (!pessoa || pessoa.turmaSetor !== turma)) return false;
-      if (categoria && (!pessoa || pessoa.categoria !== categoria)) return false;
-      return true;
-    });
-
-    this._renderizarHistorico(registros);
+  // Mantido por compatibilidade: o filtro agora é único (Relatorio.filtrar)
+  filtrar() {
+    return Relatorio.filtrar();
   },
 
   _renderizarHistorico(registros) {
@@ -122,5 +102,6 @@ const RelatorioExtra = {
 };
 
 (function () {
+  if (!Auth.getUsuarioLogado() || !Auth.temPermissao(Auth.EQUIPE)) return;
   RelatorioExtra.inicializar();
 })();

@@ -102,11 +102,8 @@ const Usuario = {
 };
 
 (function () {
+  if (!Auth.verificarAcesso([])) return;
   const usuario = Auth.getUsuarioLogado();
-  if (!usuario || usuario.perfil !== "admin") {
-    window.location.href = Auth.redirecionarParaPerfil();
-    return;
-  }
 
   document.getElementById("usuario-nome").textContent = usuario.nome;
   Usuario.inicializar();

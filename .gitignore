@@ -2,6 +2,16 @@
 Senha_PPI.txt
 *.password
 
+# Planilhas com dados de alunos (privacidade)
+*.xlsx
+*.xls
+*.csv
+~$*
+
+# Locks de editor (LibreOffice/Office)
+.~lock.*
+*.lock
+
 # Dependências
 node_modules/
 

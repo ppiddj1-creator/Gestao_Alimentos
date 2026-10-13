@@ -84,5 +84,6 @@ const Painel = {
 };
 
 (function () {
+  if (!Auth.getUsuarioLogado() || !Auth.temPermissao(Auth.EQUIPE)) return;
   Painel.inicializar();
 })();

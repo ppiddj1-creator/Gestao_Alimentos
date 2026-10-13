@@ -4,8 +4,15 @@ const Cadastro = {
   editandoId: null,
 
   async carregar() {
-    const pessoas = await Database.getColecao("pessoas");
-    this._renderizarTabela(pessoas);
+    try {
+      const pessoas = await Database.getColecao("pessoas");
+      this._renderizarTabela(pessoas);
+    } catch (erro) {
+      Database.mostrarErro(erro);
+      document.getElementById("tabela-pessoas").innerHTML =
+        "<p style='color:#c0392b;'>Não foi possível carregar as pessoas. Veja o aviso acima.</p>";
+      return;
+    }
 
     const busca = document.getElementById("busca-pessoas");
     busca.addEventListener("input", async () => {
@@ -203,11 +210,8 @@ const Cadastro = {
 };
 
 (function () {
+  if (!Auth.verificarAcesso([])) return;
   const usuario = Auth.getUsuarioLogado();
-  if (!usuario || usuario.perfil !== "admin") {
-    window.location.href = Auth.redirecionarParaPerfil();
-    return;
-  }
 
   document.getElementById("usuario-nome").textContent = usuario.nome;
   Cadastro.carregar();
