@@ -425,6 +425,7 @@ O sistema está **100% online**:
 5. Seed idempotente em js/dados-iniciais.js (só grava se "admin" estiver vazio)
 6. Repositório GitHub: ppiddj1-creator/Gestao_Alimentos
 7. GitHub Pages publicando a raiz do repositório
+   → **Site no ar:** https://ppiddj1-creator.github.io/Gestao_Alimentos/
 8. Workflow .github/workflows/keep-alive.yml pinga a API a cada 5 dias
    (evita a pausa automática por 1 semana de inatividade do plano gratuito)
 ```
@@ -496,8 +497,9 @@ O sistema está **100% online**:
 - Login aluno: `MariaSilva` / `123456` (ou a matrícula `2026001`)
 
 ### Onde testar
+- **Online (produção):** https://ppiddj1-creator.github.io/Gestao_Alimentos/
 - **Local:** abra o `index.html` com o Live Server (os dados vão para o Supabase, então funciona igual online)
-- **Online:** GitHub Pages — `ppiddj1-creator/Gestao_Alimentos`
+- **Repositório:** https://github.com/ppiddj1-creator/Gestao_Alimentos
 
 ### Dados de teste
 - O seed (`js/dados-iniciais.js`) só grava se a tabela `admin` estiver vazia — nunca apaga dados já existentes
