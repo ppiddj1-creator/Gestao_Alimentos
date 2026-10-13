@@ -102,6 +102,6 @@ const RelatorioExtra = {
 };
 
 (function () {
-  if (!Auth.getUsuarioLogado() || !Auth.temPermissao(Auth.EQUIPE)) return;
+  if (!Auth.getUsuarioLogado() || !Auth.temPermissao([])) return;
   RelatorioExtra.inicializar();
 })();

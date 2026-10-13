@@ -56,7 +56,7 @@ const Dashboard = {
 };
 
 (function () {
-  if (!Auth.verificarAcesso(Auth.EQUIPE)) return;
+  if (!Auth.verificarAcesso([])) return;
   const usuario = Auth.getUsuarioLogado();
 
   document.getElementById("usuario-nome").textContent = usuario.nome;

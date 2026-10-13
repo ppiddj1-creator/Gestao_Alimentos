@@ -1,8 +1,8 @@
 const Auth = {
   USuarioLogado: null,
 
-  // Perfis que podem ver o painel/registro/relatórios/cardápio (equipe da escola)
-  EQUIPE: ["professor", "funcionario"],
+  // Perfis que usam a tela simples de resposta (SIM/NÃO) — igual aos alunos
+  RESPOSTA: ["aluno", "professor", "funcionario"],
 
   async login(usuario, senha) {
     if (usuario === "admin" && senha === "admin") {
@@ -98,8 +98,9 @@ const Auth = {
   redirecionarParaPerfil() {
     const usuario = this.getUsuarioLogado();
     if (!usuario) return "index.html";
-    if (usuario.perfil === "aluno") return "registro-aluno.html";
-    return "dashboard.html";
+    // Somente o admin entra na administração; todos os demais vão para a tela SIM/NÃO
+    if (usuario.perfil === "admin") return "dashboard.html";
+    return "registro-aluno.html";
   },
 
   verificarAcesso(perfisPermitidos) {

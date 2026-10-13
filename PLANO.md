@@ -49,16 +49,20 @@ O sistema roda **100% online**, usando o **Supabase** (PostgreSQL gratuito na nu
 
 | Perfil | Quem é | O que pode fazer |
 |--------|--------|-----------------|
-| **Admin** | Responsável pelo sistema | Tudo: cadastrar pessoas e usuários, editar cardápio, ver registros e relatórios |
-| **Professor/Funcionário** | Docente/funcionário da escola | Registrar presença de qualquer pessoa, ver cardápio, dashboard e relatórios |
+| **Admin** | Responsável pelo sistema | Administração completa: cadastrar pessoas e usuários, editar cardápio, registrar presença de qualquer pessoa, ver dashboard e relatórios |
+| **Professor/Funcionário** | Docente/funcionário da escola | **Mesma tela dos alunos:** responder apenas se vai almoçar (SIM/NÃO) |
 | **Aluno** | Estudante | Responder SIM/NÃO se vai almoçar (1 dia antes) |
+
+> **Modelo de acesso simplificado:** a administração (painel, cadastro, registro, cardápio, relatórios e usuários) é **exclusiva do Admin**. Professores e funcionários usam a **tela simples de resposta**, igualzinho aos alunos.
 
 ### Regras importantes
 
+- **Somente o Admin** acessa o painel, cadastro, registro, cardápio, relatórios e usuários
 - **Somente o Admin** pode cadastrar pessoas no sistema
 - **Somente o Admin** pode criar novos usuários (login/senha)
-- **Alunos NÃO se cadastram** — são inseridos pelo Admin com matrícula e senha
-- **Alunos registram apenas sua opção** (SIM/NÃO) para o dia seguinte
+- **Alunos, professores e funcionários NÃO se cadastram** — são inseridos pelo Admin
+- **Alunos, professores e funcionários registram apenas a própria opção** (SIM/NÃO) para o dia seguinte
+- Quem tentar abrir uma página de administração sem ser Admin é **redirecionado** para a tela de resposta
 
 ### Login
 
@@ -86,11 +90,11 @@ O sistema roda **100% online**, usando o **Supabase** (PostgreSQL gratuito na nu
 
 ### MÓDULO 1 — Autenticação (Login) ✅
 - Tela de **login** (login + senha)
-- Redirecionamento por perfil (Aluno → tela do aluno; demais → dashboard)
+- Redirecionamento por perfil: **Admin → painel**; **aluno/professor/funcionário → tela SIM/NÃO**
 - Controle de acesso real por página (`Auth.verificarAcesso`):
-  - **Cadastros e Usuários** → somente Admin
-  - **Dashboard, Registro, Cardápio e Relatórios** → Admin, Professor e Funcionário (aluno é redirecionado)
-  - **Tela do aluno** → somente Aluno
+  - **Painel, Cadastro, Registro, Cardápio, Relatórios e Usuários** → somente Admin
+  - **Tela de resposta (SIM/NÃO)** → aluno, professor e funcionário
+  - Qualquer tentativa de acesso indevido redireciona para a tela correta do perfil
 - Botão de **sair/logout**
 - Sessão persistente (não precisa logar toda vez que abre a página)
 
@@ -107,8 +111,8 @@ O sistema roda **100% online**, usando o **Supabase** (PostgreSQL gratuito na nu
 - Botões de **Editar** e **Excluir** em cada linha
 
 ### MÓDULO 3 — Confirmação do Almoço (SIM/NÃO)
-#### Para o Aluno (pelo celular/computador): ✅
-- Tela simplificada com **apenas 2 opções:**
+#### Para o Aluno / Professor / Funcionário (pelo celular/computador): ✅
+- Mesma tela simplificada para todos os três perfis, com **apenas 2 opções:**
   - **"SIM, vou almoçar"** (verde)
   - **"NÃO vou almoçar"** (vermelho)
 - Mostra o **prato do almoço de amanhã** (cardápio cadastrado)
@@ -444,8 +448,8 @@ O sistema está **100% online**:
 | RF02 | Cadastrar pessoas (aluno, professor, funcionário) com matrícula única | Admin | ✅ |
 | RF03 | Editar e excluir pessoas cadastradas | Admin | ✅ |
 | RF04 | Buscar pessoa por nome, matrícula ou categoria | Admin/Professor | ✅ |
-| RF05 | Aluno responde SIM/NÃO se vai almoçar no dia seguinte | Aluno | ✅ |
-| RF06 | Professor/Admin registra resposta de qualquer pessoa | Professor/Admin | ✅ |
+| RF05 | Aluno/Professor/Funcionário responde SIM/NÃO se vai almoçar no dia seguinte | Aluno/Prof./Func. | ✅ |
+| RF06 | Admin registra resposta de qualquer pessoa | Admin | ✅ |
 | RF07 | Prazo: resposta do aluno até 23h59 do dia anterior (bloqueio real após o prazo) | Aluno | ✅ |
 | RF08 | Aluno pode alterar a opção antes do prazo | Aluno | ✅ |
 | RF09 | Exibir no dashboard quem respondeu SIM, NÃO e pendentes | Dashboard | ✅ |
@@ -457,7 +461,7 @@ O sistema está **100% online**:
 | RF15 | Gráfico de barras: últimos 7 dias (SIM vs NÃO) | Admin/Professor | ✅ |
 | RF16 | Calcular taxa de aproveitamento | Admin/Professor | ✅ |
 | RF17 | Cadastrar novos usuários (apenas Admin) | Admin | ✅ |
-| RF18 | Controle de acesso por perfil aplicado em todas as páginas | Sistema | ✅ |
+| RF18 | Controle de acesso: administração só para Admin; demais perfis usam a tela SIM/NÃO | Sistema | ✅ |
 
 ---
 

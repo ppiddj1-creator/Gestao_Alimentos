@@ -1,17 +1,21 @@
-// registro-aluno.js — Lógica do Registro Simplificado do Aluno (SIM/NÃO para o almoço)
+// registro-aluno.js — Tela simples de resposta SIM/NÃO (alunos, professores e funcionários)
 
 const RegistroAluno = {
+  _pessoaId: null,
+  _perfil: null,
+
   async inicializar() {
     const usuario = Auth.getUsuarioLogado();
-    const pessoa = await Database.getDocumento("pessoas", usuario.id);
+    this._perfil = usuario.perfil;
 
-    if (pessoa) {
-      document.getElementById("aluno-nome").textContent = "Olá, " + pessoa.nome + "!";
-      document.getElementById("aluno-matricula").textContent = "Login: " + (pessoa.login || pessoa.matricula);
-    } else {
-      document.getElementById("aluno-nome").textContent = "Olá, " + usuario.nome + "!";
-      document.getElementById("aluno-matricula").textContent = "Login: " + usuario.usuario;
-    }
+    const pessoa = await this._resolverPessoa(usuario);
+    // O registro sempre usa o id da PESSOA (mesmo quando o login veio da tabela "usuarios")
+    this._pessoaId = pessoa ? pessoa.id : usuario.id;
+
+    const nome = pessoa ? pessoa.nome : usuario.nome;
+    const login = pessoa ? pessoa.login || pessoa.matricula : usuario.usuario;
+    document.getElementById("aluno-nome").textContent = "Olá, " + nome + "!";
+    document.getElementById("aluno-matricula").textContent = "Login: " + login;
 
     const amanha = new Date();
     amanha.setDate(amanha.getDate() + 1);
@@ -21,7 +25,28 @@ const RegistroAluno = {
       "Amanhã: " + dias[amanha.getDay()] + ", " + amanha.getDate() + " de " + meses[amanha.getMonth()] + " de " + amanha.getFullYear();
 
     await this._carregarCardapio(amanha);
-    await this._verificarRegistro(usuario.id, amanha);
+    await this._verificarRegistro(this._pessoaId, amanha);
+  },
+
+  // Login direto na tabela "pessoas" -> id já é o da pessoa.
+  // Login criado pelo admin na tabela "usuarios" -> usa o "pessoaId" vinculado.
+  async _resolverPessoa(usuario) {
+    let pessoa = null;
+    try {
+      pessoa = await Database.getDocumento("pessoas", usuario.id);
+    } catch (erro) {
+      console.warn("Não foi possível ler a pessoa:", erro);
+    }
+    if (pessoa) return pessoa;
+
+    if (usuario.pessoaId) {
+      try {
+        return await Database.getDocumento("pessoas", usuario.pessoaId);
+      } catch (erro) {
+        console.warn("Não foi possível ler a pessoa vinculada:", erro);
+      }
+    }
+    return null;
   },
 
   async _carregarCardapio(amanha) {
@@ -45,19 +70,18 @@ const RegistroAluno = {
       return;
     }
 
-    const usuario = Auth.getUsuarioLogado();
     const amanha = new Date();
     amanha.setDate(amanha.getDate() + 1);
     const data = amanha.toISOString().split("T")[0];
 
     const registros = await Database.buscarPorCampo("registros", "data", data);
-    const existente = registros.find((r) => r.pessoaId === usuario.id);
+    const existente = registros.find((r) => r.pessoaId === this._pessoaId);
 
     const dados = {
       data,
-      pessoaId: usuario.id,
+      pessoaId: this._pessoaId,
       vaiAlmocar: opcao,
-      registradoPor: "aluno",
+      registradoPor: this._perfil || "aluno",
       registradoEm: new Date().toISOString()
     };
 
@@ -140,7 +164,9 @@ const RegistroAluno = {
 
 (function () {
   const usuario = Auth.getUsuarioLogado();
-  if (!usuario || usuario.perfil !== "aluno") {
+  // Tela de resposta (SIM/NÃO) para alunos, professores e funcionários.
+  // O admin não usa esta tela — ele vai direto para o painel.
+  if (!usuario || usuario.perfil === "admin" || !Auth.RESPOSTA.includes(usuario.perfil)) {
     window.location.href = Auth.redirecionarParaPerfil();
     return;
   }
