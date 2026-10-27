@@ -1693,6 +1693,21 @@ a {
   transform: translateY(-2px);
 }
 
+.aluno-barra-acoes {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.aluno-barra-acoes .aluno-sair {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
 .aluno-conteudo {
   max-width: 860px;
   margin: 0 auto;

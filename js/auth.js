@@ -16,6 +16,17 @@ const Auth = {
       return usuarioAdmin;
     }
 
+    if (usuario === "Gestao" && senha === "Diretoria@2026") {
+      const usuarioGestao = {
+        id: "gestao",
+        usuario: "Gestao",
+        nome: "Gestão - Diretoria",
+        perfil: "gestao"
+      };
+      this.SalvarSessao(usuarioGestao);
+      return usuarioGestao;
+    }
+
     // Pessoas: login = 2 primeiros nomes (ex.: DavidsonOliveira); fallback na matrícula
     let pessoas, usuarios;
     try {
@@ -34,7 +45,8 @@ const Auth = {
           id: pessoa.id,
           usuario: pessoa.login || pessoa.matricula,
           nome: pessoa.nome,
-          perfil: pessoa.categoria === "aluno" ? "aluno" : pessoa.categoria
+          perfil: pessoa.categoria === "aluno" ? "aluno" : pessoa.categoria,
+          origem: "pessoas"
         };
         this.SalvarSessao(pessoaLogada);
         return pessoaLogada;
@@ -54,7 +66,8 @@ const Auth = {
           id: u.id,
           usuario: u.usuario,
           nome: u.nome,
-          perfil: u.perfil
+          perfil: u.perfil,
+          origem: "usuarios"
         };
         this.SalvarSessao(usuarioLogado);
         return usuarioLogado;
@@ -88,18 +101,62 @@ const Auth = {
     return this.getUsuarioLogado() !== null;
   },
 
+  // Troca de senha do próprio usuário (perfis comuns: aluno, professor, funcionário)
+  async alterarSenha(senhaAtual, novaSenha, confirmacao) {
+    const usuario = this.getUsuarioLogado();
+    if (!usuario || !usuario.origem) {
+      throw new Error("Este perfil não permite alterar a senha.");
+    }
+    if (!senhaAtual || !novaSenha || !confirmacao) {
+      throw new Error("Preencha todos os campos.");
+    }
+    if (novaSenha.length < 6) {
+      throw new Error("A nova senha deve ter pelo menos 6 caracteres.");
+    }
+    if (novaSenha !== confirmacao) {
+      throw new Error("A nova senha e a confirmação não coincidem.");
+    }
+    if (novaSenha === senhaAtual) {
+      throw new Error("A nova senha deve ser diferente da atual.");
+    }
+
+    let registro;
+    try {
+      registro = await Database.getDocumento(usuario.origem, usuario.id);
+    } catch (erro) {
+      throw new Error(Database.erroAmigavel(erro));
+    }
+    if (!registro || registro.senha !== senhaAtual) {
+      throw new Error("Senha atual incorreta.");
+    }
+
+    try {
+      await Database.atualizar(usuario.origem, usuario.id, { senha: novaSenha });
+    } catch (erro) {
+      throw new Error(Database.erroAmigavel(erro));
+    }
+    return true;
+  },
+
+  // Perfis com acesso total à administração (admin e gestão/diretoria)
+  ehAdmin() {
+    const usuario = this.getUsuarioLogado();
+    if (!usuario) return false;
+    return usuario.perfil === "admin" || usuario.perfil === "gestao";
+  },
+
   temPermissao(perfisPermitidos) {
     const usuario = this.getUsuarioLogado();
     if (!usuario) return false;
-    if (usuario.perfil === "admin") return true;
+    if (this.ehAdmin()) return true;
     return perfisPermitidos.includes(usuario.perfil);
   },
 
   redirecionarParaPerfil() {
     const usuario = this.getUsuarioLogado();
     if (!usuario) return "index.html";
-    // Somente o admin entra na administração; todos os demais vão para a tela SIM/NÃO
-    if (usuario.perfil === "admin") return "dashboard.html";
+    // Admin e gestão entram na administração; todos os demais vão para a tela SIM/NÃO
+    if (this.ehAdmin()) return "dashboard.html";
     return "registro-aluno.html";
   },
 

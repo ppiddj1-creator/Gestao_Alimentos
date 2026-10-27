@@ -66,10 +66,11 @@ const Usuario = {
 
   async carregar() {
     const admin = { id: "admin", usuario: "admin", nome: "Administrador", perfil: "admin" };
+    const gestao = { id: "gestao", usuario: "Gestao", nome: "Gestão - Diretoria", perfil: "gestao" };
     const outros = await Database.buscarPorOrdem("usuarios", "usuario");
-    const todos = [admin, ...outros];
+    const todos = [admin, gestao, ...outros];
 
-    const perfilLabel = { admin: "Admin", nutricionista: "Nutricionista", professor: "Professor" };
+    const perfilLabel = { admin: "Admin", gestao: "Gestão", nutricionista: "Nutricionista", professor: "Professor", funcionario: "Funcionário" };
 
     let html = '<table class="tabela"><thead><tr>';
     html += '<th>Nome</th><th>Usuário (login)</th><th>Perfil</th><th>Ações</th>';
@@ -81,7 +82,7 @@ const Usuario = {
       html += "<td>" + u.usuario + "</td>";
       html += "<td>" + (perfilLabel[u.perfil] || u.perfil) + "</td>";
       html += "<td>";
-      if (u.id !== "admin") {
+      if (u.id !== "admin" && u.id !== "gestao") {
         html += '<button class="btn btn-vermelho" onclick="Usuario.excluir(\'' + u.id + '\')">Excluir</button>';
       } else {
         html += '<span style="color:#999;">Padrão</span>';

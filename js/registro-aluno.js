@@ -26,6 +26,46 @@ const RegistroAluno = {
 
     await this._carregarCardapio(amanha);
     await this._verificarRegistro(this._pessoaId, amanha);
+
+    document.getElementById("form-alterar-senha").addEventListener("submit", (e) => {
+      e.preventDefault();
+      this.alterarSenha();
+    });
+  },
+
+  abrirModalSenha() {
+    document.getElementById("form-alterar-senha").reset();
+    document.getElementById("alerta-senha").className = "alerta oculto";
+    document.getElementById("modal-senha").style.display = "flex";
+  },
+
+  fecharModalSenha(event) {
+    if (event && event.target !== event.currentTarget) return;
+    document.getElementById("modal-senha").style.display = "none";
+  },
+
+  async alterarSenha() {
+    const atual = document.getElementById("s-atual").value;
+    const nova = document.getElementById("s-nova").value;
+    const confirmacao = document.getElementById("s-confirmar").value;
+
+    try {
+      await Auth.alterarSenha(atual, nova, confirmacao);
+      document.getElementById("form-alterar-senha").reset();
+      this._mostrarAlertaSenha("Senha alterada com sucesso!", "sucesso");
+      setTimeout(() => {
+        document.getElementById("modal-senha").style.display = "none";
+      }, 1200);
+    } catch (erro) {
+      this._mostrarAlertaSenha(erro.message, "erro");
+    }
+  },
+
+  _mostrarAlertaSenha(msg, tipo) {
+    const alerta = document.getElementById("alerta-senha");
+    alerta.textContent = msg;
+    alerta.className = "alerta alerta-" + tipo;
+    setTimeout(() => alerta.classList.add("oculto"), 5000);
   },
 
   // Login direto na tabela "pessoas" -> id já é o da pessoa.
@@ -166,7 +206,7 @@ const RegistroAluno = {
   const usuario = Auth.getUsuarioLogado();
   // Tela de resposta (SIM/NÃO) para alunos, professores e funcionários.
   // O admin não usa esta tela — ele vai direto para o painel.
-  if (!usuario || usuario.perfil === "admin" || !Auth.RESPOSTA.includes(usuario.perfil)) {
+  if (!usuario || Auth.ehAdmin() || !Auth.RESPOSTA.includes(usuario.perfil)) {
     window.location.href = Auth.redirecionarParaPerfil();
     return;
   }
