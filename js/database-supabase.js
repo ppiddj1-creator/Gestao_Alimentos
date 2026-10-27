@@ -29,6 +29,35 @@ const Database = {
     return id;
   },
 
+  // Insere vários registros em uma única requisição (uma linha falha => lote inteiro falha)
+  async adicionarLote(nomeColecao, registros) {
+    await this._aguardarSeed();
+    if (!registros || registros.length === 0) return 0;
+    const linhas = registros.map((r) => (r.id ? r : { id: this._gerarId(), ...r }));
+    const { error } = await sb.from(nomeColecao).insert(linhas);
+    if (error) throw error;
+    return linhas.length;
+  },
+
+  // Seleciona só algumas colunas, paginando quando houver mais de 1000 linhas
+  async listarCampos(nomeColecao, campos) {
+    await this._aguardarSeed();
+    const resultado = [];
+    const TAM = 1000;
+    let inicio = 0;
+    for (;;) {
+      const { data, error } = await sb
+        .from(nomeColecao)
+        .select(campos.join(","))
+        .range(inicio, inicio + TAM - 1);
+      if (error) throw error;
+      resultado.push(...(data || []));
+      if (!data || data.length < TAM) break;
+      inicio += TAM;
+    }
+    return resultado;
+  },
+
   async atualizar(nomeColecao, id, dados) {
     await this._aguardarSeed();
     const { data, error } = await sb.from(nomeColecao).update(dados).eq("id", id).select("id");
@@ -41,6 +70,13 @@ const Database = {
   async excluir(nomeColecao, id) {
     await this._aguardarSeed();
     const { error } = await sb.from(nomeColecao).delete().eq("id", id);
+    if (error) throw error;
+  },
+
+  // Exclui todos os registros de uma coleção em uma única requisição
+  async excluirTodos(nomeColecao) {
+    await this._aguardarSeed();
+    const { error } = await sb.from(nomeColecao).delete().neq("id", "__todos__");
     if (error) throw error;
   },
 

@@ -8,71 +8,109 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="pagina-aluno">
-  <div class="aluno-banner">
+  <header class="aluno-banner">
     <div class="aluno-barra">
       <span class="aluno-marca">
         <img src="assets/img/logo-nutrigestao-branca.png" alt="Logo NutriGestão" class="navbar-logo">
         <span class="navbar-texto">
-          <strong>Gestão Alimentar</strong>
-          <small>Escolar</small>
+          <strong>Ecit Professor Lordão</strong>
+          <small>Gestão Alimentar Escolar</small>
         </span>
       </span>
       <div class="aluno-barra-acoes">
-        <button type="button" class="aluno-sair" onclick="RegistroAluno.abrirModalSenha()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <button type="button" class="aluno-acao" onclick="RegistroAluno.abrirModalSenha()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="3" y="11" width="18" height="11" rx="2"/>
             <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
           </svg>
-          Alterar senha
+          <span>Alterar senha</span>
         </button>
-        <a class="aluno-sair" href="index.html" onclick="Auth.sair(); return true;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <a class="aluno-acao" href="index.html" onclick="Auth.sair(); return true;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
             <polyline points="16 17 21 12 16 7"/>
             <line x1="21" y1="12" x2="9" y2="12"/>
           </svg>
-          Sair
+          <span>Sair</span>
         </a>
       </div>
     </div>
+
     <div class="aluno-conteudo">
       <div class="aluno-titulo">
-        <span class="aluno-avatar">🙋</span>
+        <span class="aluno-avatar" id="aluno-avatar">—</span>
         <div>
           <h1 id="aluno-nome">Olá!</h1>
-          <p id="aluno-matricula">Matrícula: —</p>
+          <p id="aluno-volta">Bem-vindo(a) de volta</p>
         </div>
       </div>
-      <p class="aluno-cartao" id="aluno-data"></p>
-      <p class="aluno-cardapio" id="cardapio-hoje-aluno"></p>
+
+      <div class="aluno-info">
+        <div class="aluno-info-cartao">
+          <span class="aluno-info-icone">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </span>
+          <div class="aluno-info-textos">
+            <small>Almoço de amanhã</small>
+            <strong id="aluno-data">—</strong>
+          </div>
+        </div>
+
+        <div class="aluno-info-cartao">
+          <span class="aluno-info-icone">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
+              <path d="M7 2v20"/>
+              <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+            </svg>
+          </span>
+          <div class="aluno-info-textos">
+            <small>Cardápio previsto</small>
+            <strong id="cardapio-hoje-aluno">—</strong>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+  </header>
 
   <main class="aluno-corpo">
     <section class="aluno-card">
-      <h2>Você vai almoçar amanhã?</h2>
-      <p class="aluno-sub">Confirme sua presença para o almoço. Você pode alterar até às 23h59 de hoje.</p>
+      <span class="aluno-card-icone">
+        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
+          <path d="M7 2v20"/>
+          <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+        </svg>
+      </span>
 
-      <div class="opcao-grupo">
-        <button type="button" class="opcao-btn sim" onclick="RegistroAluno.registrar(true)">
-          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <h2>Você vai almoçar na escola amanhã?</h2>
+      <p class="aluno-sub">Sua resposta ajuda a equipe da cozinha a planejar a quantidade de refeições e evitar desperdícios.</p>
+
+      <div class="opcao-grupo" role="group" aria-label="Confirmação do almoço de amanhã">
+        <button type="button" class="opcao-btn sim" aria-pressed="false" onclick="RegistroAluno.registrar(true)">
+          <svg class="opcao-icone" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M20 6 9 17l-5-5"/>
           </svg>
-          SIM, vou almoçar
+          <span>Sim, vou almoçar</span>
         </button>
-        <button type="button" class="opcao-btn nao" onclick="RegistroAluno.registrar(false)">
-          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <button type="button" class="opcao-btn nao" aria-pressed="false" onclick="RegistroAluno.registrar(false)">
+          <svg class="opcao-icone" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M18 6 6 18"/>
             <path d="m6 6 12 12"/>
           </svg>
-          NÃO vou almoçar
+          <span>Não vou almoçar</span>
         </button>
       </div>
 
-      <div id="alerta-aluno" class="alerta alerta-sucesso oculto"></div>
+      <div id="alerta-aluno" class="alerta oculto" role="status" aria-live="polite"></div>
 
-      <p id="status-registro" class="status-msg pendente">Nenhuma opção registrada ainda</p>
-      <p id="prazo-info" class="prazo-info">Prazo: até 23h59 de hoje.</p>
+      <p id="status-registro" class="status-msg pendente">Você ainda não respondeu</p>
+      <p id="prazo-info" class="prazo-info">—</p>
     </section>
 
     <p class="aluno-rodape">🌿 Gestão Alimentar Escolar · contamos com você!</p>

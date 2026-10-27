@@ -164,6 +164,32 @@ const Cadastro = {
     }
   },
 
+  async excluirTodos() {
+    let pessoas = [];
+    try {
+      pessoas = await Database.listarCampos("pessoas", ["id"]);
+    } catch (erro) {
+      this._mostrarAlerta("Erro ao listar pessoas: " + erro.message, "erro");
+      return;
+    }
+    if (pessoas.length === 0) {
+      this._mostrarAlerta("Nenhuma pessoa cadastrada.", "aviso");
+      return;
+    }
+    const confirmar = confirm(
+      "Tem certeza que deseja excluir TODAS as " + pessoas.length +
+      " pessoas cadastradas?\n\nEssa ação não pode ser desfeita."
+    );
+    if (!confirmar) return;
+    try {
+      await Database.excluirTodos("pessoas");
+      this._mostrarAlerta("Todas as " + pessoas.length + " pessoas foram excluídas!", "sucesso", 6000);
+      this.carregar();
+    } catch (erro) {
+      this._mostrarAlerta("Erro ao excluir: " + erro.message, "erro");
+    }
+  },
+
   limparForm() {
     this.editandoId = null;
     document.getElementById("form-cadastro").reset();

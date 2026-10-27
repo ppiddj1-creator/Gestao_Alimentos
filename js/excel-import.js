@@ -4,6 +4,7 @@
 const ImportadorExcel = {
   linhas: [],
   arquivoNome: "",
+  _importando: false,
 
   analisarDoInput() {
     const input = document.getElementById("arquivo-excel");
@@ -16,8 +17,17 @@ const ImportadorExcel = {
   },
 
   async analisarArquivo(arquivo) {
-    const buffer = await arquivo.arrayBuffer();
-    this.processarBuffer(buffer, arquivo.name);
+    try {
+      const buffer = await arquivo.arrayBuffer();
+      this.processarBuffer(buffer, arquivo.name);
+    } catch (erro) {
+      console.error("Falha ao ler a planilha:", erro);
+      this._alerta(
+        "Não foi possível ler o arquivo. Confira se é .xlsx, .xls ou .csv válido. (" + (erro.message || erro) + ")",
+        "erro",
+        10000
+      );
+    }
   },
 
   processarBuffer(buffer, nomeArquivo) {
@@ -153,12 +163,14 @@ const ImportadorExcel = {
       return;
     }
 
-    const validas = this.linhas.filter((l) => l.ok).length;
-    const erros = this.linhas.length - validas;
+    const importadas = this.linhas.filter((l) => l.importada).length;
+    const validas = this.linhas.filter((l) => l.ok && !l.importada).length;
+    const erros = this.linhas.length - validas - importadas;
 
     let html = '<p style="font-size:13px; color:#6b8299; margin-bottom:10px;">';
     html += "Arquivo: <strong>" + this._escapar(this.arquivoNome) + "</strong> · ";
     html += this.linhas.length + " linha(s) · <strong style='color:#0f7a35;'>" + validas + " válida(s)</strong>";
+    if (importadas > 0) html += " · <strong style='color:#0f7a35;'>" + importadas + " importada(s)</strong>";
     if (erros > 0) html += " · <strong style='color:#c0392b;'>" + erros + " com erro</strong>";
     html += "</p>";
 
@@ -189,75 +201,174 @@ const ImportadorExcel = {
     container.innerHTML = html;
 
     if (acao) {
-      const pendentes = this.linhas.filter((l) => l.ok).length;
+      const pendentes = this.linhas.filter((l) => l.ok && !l.importada).length;
       acao.style.display = pendentes > 0 ? "flex" : "none";
-      if (btn) btn.textContent = "Importar " + pendentes + " pessoa(s)";
+      if (btn && pendentes > 0) btn.textContent = "Importar " + pendentes + " pessoa(s)";
     }
   },
 
   async confirmarImportacao() {
-    const validas = this.linhas.filter((l) => l.ok);
+    if (this._importando) return;
+    const validas = this.linhas.filter((l) => l.ok && !l.importada);
     if (validas.length === 0) {
       this._alerta("Nenhuma linha válida para importar.", "erro");
       return;
     }
 
-    const usadas = new Set();
-    let seq = parseInt(await Cadastro._gerarMatricula(), 10);
-    const hoje = new Date().toISOString().split("T")[0];
-    let importadas = 0;
-    let falhas = 0;
+    this._importando = true;
+    const btn = document.getElementById("btn-importar-excel");
+    const total = validas.length;
+    const progresso = (feito) => {
+      if (btn) btn.textContent = "Importando " + Math.min(feito, total) + "/" + total + "...";
+    };
+    if (btn) {
+      btn.disabled = true;
+      progresso(0);
+    }
 
-    for (const l of validas) {
-      try {
-        let matricula = l.matricula;
-        if (!matricula) {
-          while (usadas.has(String(seq))) seq++;
-          matricula = String(seq);
-          seq++;
-        }
-        if (usadas.has(matricula)) {
-          throw new Error("Matrícula repetida na planilha: " + matricula);
-        }
-        const dup = await Database.buscarPorCampo("pessoas", "matricula", matricula);
-        if (dup.length > 0) {
-          throw new Error("Matrícula já existe no sistema: " + matricula);
-        }
-        usadas.add(matricula);
+    try {
+      const hoje = new Date().toISOString().split("T")[0];
 
-        const login = await Cadastro._loginUnico(l.login || Cadastro._gerarLogin(l.nome));
+      // 1) Uma única consulta ao banco para checar matrículas, logins e pessoas já existentes
+      const existentes = await Database.listarCampos("pessoas", [
+        "login",
+        "matricula",
+        "nome",
+        "dataNascimento"
+      ]);
+      const matriculasExistentes = new Set(
+        existentes.map((p) => String(p.matricula || "")).filter(Boolean)
+      );
+      const loginsExistentes = new Set(
+        existentes.map((p) => String(p.login || "")).filter(Boolean)
+      );
+      // Chave para evitar duplicidade ao reimportar: mesmo nome + mesmo nascimento
+      const jaCadastradas = new Set(
+        existentes.map(
+          (p) => String(p.nome || "").trim().toLowerCase() + "|" + String(p.dataNascimento || "")
+        )
+      );
 
-        await Database.adicionar("pessoas", {
-          nome: l.nome,
-          categoria: l.categoria,
-          turmaSetor: l.turmaSetor,
-          matricula,
-          login,
-          dataNascimento: l.dataNascimento,
-          senha: l.senha,
-          criadoEm: hoje
-        });
-        l.matricula = matricula;
-        l.login = login;
-        l.importada = true;
-        importadas++;
-      } catch (erro) {
-        l.ok = false;
-        l.erro = erro.message;
-        falhas++;
+      // 2) Monta todos os registros em memória (matrícula e login únicos)
+      const registros = [];
+      const usadas = new Set();
+      const loginsUsados = new Set();
+      const ano = String(new Date().getFullYear());
+      let maior = 0;
+      matriculasExistentes.forEach((m) => {
+        if (m.startsWith(ano)) {
+          const n = parseInt(m, 10);
+          if (!isNaN(n) && n > maior) maior = n;
+        }
+      });
+      let seq = maior > 0 ? maior + 1 : parseInt(ano + "001", 10);
+
+      for (const l of validas) {
+        try {
+          let matricula = String(l.matricula || "").trim();
+          if (matricula && usadas.has(matricula)) {
+            throw new Error("Matrícula repetida na planilha: " + matricula);
+          }
+
+          const chavePessoa = String(l.nome).trim().toLowerCase() + "|" + String(l.dataNascimento || "");
+          if (jaCadastradas.has(chavePessoa)) {
+            throw new Error("Já cadastrado no sistema (mesmo nome e nascimento)");
+          }
+
+          if (matricula) {
+            if (matriculasExistentes.has(matricula)) {
+              throw new Error("Matrícula já existe no sistema: " + matricula);
+            }
+          } else {
+            while (matriculasExistentes.has(String(seq)) || usadas.has(String(seq))) seq++;
+            matricula = String(seq);
+            seq++;
+          }
+          usadas.add(matricula);
+
+          const base = l.login || Cadastro._gerarLogin(l.nome) || "usuario";
+          let login = base;
+          let n = 2;
+          while (loginsExistentes.has(login) || loginsUsados.has(login)) {
+            login = base + n;
+            n++;
+          }
+          loginsUsados.add(login);
+          jaCadastradas.add(chavePessoa);
+
+          registros.push({
+            ref: l,
+            dados: {
+              nome: l.nome,
+              categoria: l.categoria,
+              turmaSetor: l.turmaSetor,
+              matricula,
+              login,
+              dataNascimento: l.dataNascimento,
+              senha: l.senha,
+              criadoEm: hoje
+            }
+          });
+          l.matricula = matricula;
+          l.login = login;
+        } catch (erro) {
+          l.ok = false;
+          l.erro = erro.message;
+        }
       }
-    }
 
-    this.renderizarPreview();
+      // 3) Insere em lotes de 100 (poucas requisições); se um lote falhar,
+      //    refaz esse lote linha a linha para identificar quem causou o erro
+      const TAM_LOTE = 100;
+      let importadas = 0;
+      let falhas = 0;
 
-    if (falhas === 0) {
-      this._alerta("Importação concluída: " + importadas + " pessoa(s) cadastrada(s)!", "sucesso", 10000);
-    } else {
-      this._alerta("Importadas: " + importadas + " · Falhas: " + falhas + " (veja a tabela).", "erro", 10000);
-    }
+      for (let i = 0; i < registros.length; i += TAM_LOTE) {
+        const lote = registros.slice(i, i + TAM_LOTE);
+        progresso(importadas + falhas);
+        try {
+          await Database.adicionarLote("pessoas", lote.map((r) => r.dados));
+          lote.forEach((r) => {
+            r.ref.importada = true;
+            importadas++;
+          });
+        } catch (erroLote) {
+          console.warn("Lote falhou, refazendo linha a linha:", erroLote);
+          for (const r of lote) {
+            try {
+              await Database.adicionar("pessoas", r.dados);
+              r.ref.importada = true;
+              importadas++;
+            } catch (erroLinha) {
+              r.ref.ok = false;
+              r.ref.erro = erroLinha.message;
+              falhas++;
+            }
+          }
+        }
+        progresso(importadas + falhas);
+      }
 
-    if (importadas > 0) {
-      await Cadastro.carregar();
+      if (falhas === 0) {
+        this._alerta("Importação concluída: " + importadas + " pessoa(s) cadastrada(s)!", "sucesso", 10000);
+      } else {
+        this._alerta("Importadas: " + importadas + " · Falhas: " + falhas + " (veja a tabela).", "erro", 10000);
+      }
+
+      if (importadas > 0) {
+        await Cadastro.carregar();
+      }
+    } catch (erro) {
+      console.error("Erro na importação:", erro);
+      this._alerta(
+        "Importação interrompida: " + (Database.erroAmigavel ? Database.erroAmigavel(erro) : erro.message),
+        "erro",
+        12000
+      );
+    } finally {
+      this._importando = false;
+      if (btn) btn.disabled = false;
+      this.renderizarPreview();
     }
   },
 

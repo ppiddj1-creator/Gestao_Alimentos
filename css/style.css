@@ -1480,129 +1480,147 @@ a {
 /* ============ PÁGINA DO ALUNO ============ */
 
 .pagina-aluno {
-  background: linear-gradient(140deg, #0A5C28 0%, #0F7A35 55%, #34C759 140%);
+  background: linear-gradient(165deg, #0A5C28 0%, #0F7A35 65%, #12873C 100%);
   min-height: 100vh;
-}
-
-.aluno-pagina {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 22px;
 }
 
 .aluno-card {
-  background: #FFFFFF;
-  border-radius: 24px;
-  box-shadow: 0 26px 60px rgba(6, 40, 20, 0.4);
-  padding: 36px 30px 28px;
-  max-width: 440px;
+  background: var(--branco);
+  border-radius: 26px;
+  box-shadow: 0 24px 54px rgba(4, 32, 16, 0.38);
+  padding: 38px 34px 30px;
   width: 100%;
   text-align: center;
-  animation: subir 0.45s ease both;
 }
 
-.aluno-logo {
-  width: 92px;
-  height: 92px;
-  object-fit: contain;
+.aluno-card-icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  background: var(--verde-suave);
+  border: 1px solid #D3EDDA;
+  color: var(--verde-escuro);
+  margin-bottom: 16px;
 }
 
 .aluno-card h2 {
   color: var(--verde-escuro);
   font-size: 22px;
   font-weight: 700;
-  margin: 14px 0 4px;
+  line-height: 1.3;
+  margin: 0 0 8px;
 }
 
-.aluno-card .subtitulo {
+.aluno-sub {
   color: var(--cinza-texto);
-  font-size: 13.5px;
-  margin-bottom: 6px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  margin: 0 auto 24px;
+  max-width: 400px;
 }
 
-#cardapio-hoje-aluno {
-  background: var(--verde-suave);
-  color: var(--verde-escuro);
-  border: 1px solid #D3EDDA;
-  border-radius: 14px;
-  padding: 12px 14px;
-  font-size: 13.5px;
-  margin: 14px 0 4px;
-  line-height: 1.5;
+.aluno-card .alerta {
+  text-align: left;
+  margin-bottom: 14px;
 }
 
-.pergunta-aluno {
-  margin: 18px 0 14px;
-  font-size: 16px;
-  font-weight: 700;
-  color: #16281F;
-}
-
-.opcoes {
+.opcao-grupo {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  margin: 0 0 14px;
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
 .opcao-btn {
-  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 132px;
+  padding: 20px 14px;
+  border-radius: 18px;
   border: 2px solid #E1E9E4;
-  background: #FFFFFF;
-  padding: 18px 10px;
+  background: var(--branco);
   cursor: pointer;
-  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s, background-color 0.25s;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 15.5px;
   font-weight: 700;
   color: #33433C;
-}
-
-.opcao-btn .icone {
-  font-size: 26px;
-  display: block;
-  margin-bottom: 6px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease, opacity 0.18s ease;
 }
 
 .opcao-btn:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   box-shadow: var(--sombra-media);
 }
 
-.opcao-btn.sim { border-color: #B9E6C4; }
-.opcao-btn.nao { border-color: #F3C0C0; }
+.opcao-btn:focus-visible {
+  outline: 3px solid rgba(15, 122, 53, 0.4);
+  outline-offset: 2px;
+}
+
+.opcao-btn.sim {
+  background: var(--verde-primario);
+  border-color: var(--verde-primario);
+  color: var(--branco);
+}
+
+.opcao-btn.sim:hover {
+  background: var(--verde-escuro);
+  border-color: var(--verde-escuro);
+  box-shadow: 0 12px 26px rgba(10, 92, 40, 0.35);
+}
+
+.opcao-btn.nao {
+  background: #FDEDED;
+  border-color: #F3C0C0;
+  color: #C0392B;
+}
+
+.opcao-btn.nao:hover {
+  background: #FADEDF;
+  border-color: #E89A9E;
+  box-shadow: 0 12px 26px rgba(192, 57, 43, 0.18);
+}
 
 .opcao-btn.sim.selecionado {
-  background: #E4F7E9;
-  border-color: var(--verde-primario);
-  color: var(--verde-primario);
-  box-shadow: 0 8px 20px rgba(15, 122, 53, 0.2);
+  background: var(--verde-escuro);
+  border-color: var(--verde-escuro);
+  color: var(--branco);
+  box-shadow: 0 0 0 4px rgba(15, 122, 53, 0.25), 0 10px 24px rgba(10, 92, 40, 0.4);
 }
 
 .opcao-btn.nao.selecionado {
-  background: #FCE9EA;
-  border-color: var(--erro);
-  color: #C0392B;
-  box-shadow: 0 8px 20px rgba(229, 72, 77, 0.18);
+  background: #F7D7D8;
+  border-color: #C0392B;
+  color: #A3291F;
+  box-shadow: 0 0 0 4px rgba(192, 57, 43, 0.2), 0 10px 24px rgba(192, 57, 43, 0.25);
 }
 
 .opcao-btn.desabilitado,
 .opcao-btn:disabled {
-  opacity: 0.55;
+  opacity: 0.6;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
   pointer-events: none;
 }
 
+.opcao-btn.carregando {
+  cursor: progress;
+  opacity: 0.65;
+}
+
 .status-msg {
-  margin-top: 4px;
-  padding: 12px;
-  border-radius: var(--raio-s);
-  font-size: 14px;
-  font-weight: 600;
+  margin-top: 2px;
+  padding: 13px 14px;
+  border-radius: 14px;
+  font-size: 14.5px;
+  font-weight: 700;
 }
 
 .status-msg.confirmado {
@@ -1624,39 +1642,23 @@ a {
 }
 
 .prazo-info {
-  color: #8AA0B5;
-  font-size: 12px;
+  color: #7A8CA0;
+  font-size: 12.5px;
   margin-top: 12px;
 }
 
-.aluno-sair {
-  margin-top: 16px;
-  display: inline-block;
-  color: #9AA9A2;
-  font-size: 13px;
-  cursor: pointer;
-  text-decoration: underline;
-  border: none;
-  background: none;
-  font-family: inherit;
-  transition: color 0.2s;
-}
-
-.aluno-sair:hover {
-  color: var(--verde-escuro);
-}
-
 .aluno-banner {
-  background: linear-gradient(135deg, #0A5C28 0%, #0F7A35 55%, #34C759 140%);
-  padding: 18px 24px 26px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(5, 42, 20, 0.26);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px 24px 24px;
 }
 
 .aluno-barra {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
+  flex-wrap: wrap;
+  gap: 10px 14px;
   max-width: 860px;
   margin: 0 auto;
 }
@@ -1669,143 +1671,142 @@ a {
   text-decoration: none;
 }
 
-.aluno-barra .aluno-sair {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  padding: 9px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  color: #FFFFFF;
-  text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  font-size: 12px;
-  font-weight: 700;
-  transition: background-color 0.2s, transform 0.15s;
-}
-
-.aluno-barra .aluno-sair:hover {
-  background: rgba(255, 255, 255, 0.24);
-  color: #FFFFFF;
-  transform: translateY(-2px);
-}
-
 .aluno-barra-acoes {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
   justify-content: flex-end;
 }
 
-.aluno-barra-acoes .aluno-sair {
-  display: flex;
+.aluno-acao {
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  margin: 0;
+  gap: 7px;
+  padding: 7px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.88);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.aluno-acao:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: var(--branco);
 }
 
 .aluno-conteudo {
   max-width: 860px;
   margin: 0 auto;
-  padding-top: 22px;
-  color: #FFFFFF;
+  padding-top: 24px;
+  color: var(--branco);
 }
 
 .aluno-titulo {
   display: flex;
   align-items: center;
-  gap: 18px;
-  margin-bottom: 14px;
-}
-
-.aluno-titulo h1 {
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1.15;
-}
-
-.aluno-titulo p {
-  font-size: 13.5px;
-  color: rgba(255, 255, 255, 0.85);
-  margin-top: 2px;
-}
-
-.aluno-avatar {
-  flex: 0 0 auto;
-  width: 74px;
-  height: 74px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 34px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-}
-
-.aluno-cartao {
-  display: inline-block;
-  padding: 7px 14px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.16);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.aluno-cardapio {
-  margin-top: 12px;
-  padding: 11px 16px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px dashed rgba(255, 255, 255, 0.35);
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.aluno-corpo {
-  max-width: 560px;
-  margin: 0 auto;
-  padding: 30px 22px 40px;
-}
-
-.aluno-card {
-  box-shadow: 0 18px 44px rgba(6, 40, 20, 0.35);
-}
-
-.aluno-sub {
-  color: var(--cinza-texto);
-  font-size: 14px;
-  line-height: 1.55;
-  margin-bottom: 20px;
-}
-
-.opcao-grupo {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
   gap: 16px;
   margin-bottom: 18px;
 }
 
-.opcao-grupo .opcao-btn {
+.aluno-titulo h1 {
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.aluno-titulo p {
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 3px;
+}
+
+.aluno-avatar {
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  min-height: 108px;
-  padding: 16px 10px;
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.aluno-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.aluno-info-cartao {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  min-width: 0;
+}
+
+.aluno-info-icone {
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--branco);
+}
+
+.aluno-info-textos {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.aluno-info-textos small {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.aluno-info-textos strong {
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--branco);
+  overflow-wrap: anywhere;
+}
+
+.aluno-corpo {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 34px 22px 44px;
 }
 
 .aluno-rodape {
   text-align: center;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.82);
   font-size: 13px;
   font-weight: 500;
+  margin-top: 22px;
 }
 
 /* ============ IMPRESSÃO ============ */
@@ -1944,23 +1945,23 @@ a {
   }
 
   .aluno-card {
-    padding: 28px 22px 22px;
+    padding: 30px 22px 24px;
   }
 
-  .opcoes {
-    grid-template-columns: 1fr 1fr;
+  .aluno-info {
+    grid-template-columns: 1fr;
   }
 
   .aluno-banner {
-    padding: 16px 16px 22px;
+    padding: 14px 16px 20px;
   }
 
   .aluno-titulo h1 {
-    font-size: 22px;
+    font-size: 23px;
   }
 
-  .opcao-grupo .opcao-btn {
-    min-height: 92px;
+  .opcao-btn {
+    min-height: 108px;
   }
 }
 
@@ -1996,5 +1997,40 @@ a {
 
   .pagina-acoes .btn {
     flex: 1 1 auto;
+  }
+
+  .aluno-corpo {
+    padding: 24px 16px 36px;
+  }
+
+  .aluno-card {
+    padding: 26px 18px 22px;
+    border-radius: 22px;
+  }
+
+  .aluno-card h2 {
+    font-size: 19.5px;
+  }
+
+  .opcao-grupo {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .opcao-btn {
+    flex-direction: row;
+    min-height: 66px;
+    gap: 12px;
+    font-size: 15px;
+  }
+
+  .aluno-titulo {
+    gap: 12px;
+  }
+
+  .aluno-avatar {
+    width: 56px;
+    height: 56px;
+    font-size: 18px;
   }
 }
